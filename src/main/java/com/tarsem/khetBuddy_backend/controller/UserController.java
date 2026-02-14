@@ -31,9 +31,13 @@ public class UserController {
     AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
         userService.saveUser(registerRequest);
-        return ResponseEntity.ok("User "+registerRequest.getUsername()+" registered successfully");
+        return ResponseEntity.ok(
+                new AuthResponse(
+                        jwtService.generateAccessToken(registerRequest.getUsername()),
+                        jwtService.generateRefreshToken(registerRequest.getUsername())
+                ));
     }
 
     @PostMapping("/login")
