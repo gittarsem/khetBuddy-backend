@@ -29,11 +29,11 @@ public class UserService {
 
     public User updateUser(ProfileUpdateRequest profileUpdateRequest, String username) {
         User user=userRepo.findByUsername(username);
-        if(username==null){
+        if(username==null) {
             throw new RuntimeException("User does not exists");
         }
-
-        user.setLocation(profileUpdateRequest.getLocation());
+        user.setLatitude(profileUpdateRequest.getLatitude());
+        user.setLongitude(profileUpdateRequest.getLongitude());
         user.setTotal_land(profileUpdateRequest.getTotal_land());
         user.setIrrigation_type(profileUpdateRequest.getIrrigation_type());
         user.setPh_level(profileUpdateRequest.getPh_level());

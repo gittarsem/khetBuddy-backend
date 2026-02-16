@@ -10,7 +10,9 @@ public class UserResponse {
     private int id;
     private String username;
 
-    private String location;
+    public Double latitude;
+    public Double longitude;
+
     private int total_land;
     private String irrigation_type;
     private String ph_level;

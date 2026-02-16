@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileUpdateRequest {
 
-    private String location;
+
     private int total_land;
     private String irrigation_type;
     private String ph_level;
     private String crop;
+
+    public Double latitude;
+    public Double longitude;
+
 }
