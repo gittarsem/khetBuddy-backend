@@ -23,8 +23,8 @@ public class JwtService {
     @Value("${jwt.secret}")
     public String secretKey;
 
-    private final long ACCESS_TOKEN_TIME = 1000 * 60 * 15;
-    private final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 7;
+    private final long ACCESS_TOKEN_TIME = 1000 * 60 * 60;
+    private final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 10;
 
 
     public String generateAccessToken(String username){

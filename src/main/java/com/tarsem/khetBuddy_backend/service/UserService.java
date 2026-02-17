@@ -5,6 +5,7 @@ import com.tarsem.khetBuddy_backend.dto.RegisterRequest;
 import com.tarsem.khetBuddy_backend.model.User;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +29,10 @@ public class UserService {
     }
 
     public User updateUser(ProfileUpdateRequest profileUpdateRequest, String username) {
-        User user=userRepo.findByUsername(username);
-        if(username==null) {
-            throw new RuntimeException("User does not exists");
-        }
+        User user=userRepo.findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found: " + username));
+
         user.setLatitude(profileUpdateRequest.getLatitude());
         user.setLongitude(profileUpdateRequest.getLongitude());
         user.setTotal_land(profileUpdateRequest.getTotal_land());
@@ -40,5 +41,17 @@ public class UserService {
         user.setCrop(profileUpdateRequest.getCrop());
 
         return userRepo.save(user);
+    }
+
+
+    public User getCurrentUser() {
+        String username= SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepo.findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found: " + username)
+                );
     }
 }
