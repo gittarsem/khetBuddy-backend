@@ -4,27 +4,36 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tarsem.khetBuddy_backend.dto.WeatherResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class WeatherService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final WebClient webClient;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    public WeatherService() {
+        this.webClient = WebClient.builder()
+                .baseUrl("https://api.open-meteo.com")
+                .build();
+    }
 
     public WeatherResponse getWeather(double lat, double lon) {
 
-        String url =
-                "https://api.open-meteo.com/v1/forecast?"
-                        + "latitude=" + lat
-                        + "&longitude=" + lon
-                        + "&daily=temperature_2m_mean,rain_sum"
-                        + "&hourly=relative_humidity_2m,windspeed_10m"
-                        + "&timezone=auto";
-
-        String rawJson = restTemplate.getForObject(url, String.class);
-
         try {
+            String rawJson = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1/forecast")
+                            .queryParam("latitude", lat)
+                            .queryParam("longitude", lon)
+                            .queryParam("daily", "temperature_2m_mean,rain_sum")
+                            .queryParam("hourly", "relative_humidity_2m,windspeed_10m")
+                            .queryParam("timezone", "auto")
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
             JsonNode root = mapper.readTree(rawJson);
 
             WeatherResponse response = new WeatherResponse();
@@ -58,24 +67,24 @@ public class WeatherService {
             return response;
 
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing weather response", e);
+            throw new RuntimeException("Error fetching weather data", e);
         }
     }
 
     private String generateAdvisory(double rain, double humidity, double wind) {
 
         if (rain > 20) {
-            return "Heavy rain expected 🌧️ Avoid irrigation today.";
+            return "Heavy rain expected - Avoid irrigation today.";
         }
 
         if (humidity > 80) {
-            return "High humidity 💧 Risk of fungal disease.";
+            return "High humidity - Risk of fungal disease.";
         }
 
         if (wind > 25) {
-            return "Strong wind 🌬️ Avoid pesticide spraying.";
+            return "Strong wind - Avoid pesticide spraying.";
         }
 
-        return "Weather is normal ✅ Suitable for farming activities.";
+        return "Weather is normal - Suitable for farming activities.";
     }
 }

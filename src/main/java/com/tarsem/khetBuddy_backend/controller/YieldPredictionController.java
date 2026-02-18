@@ -77,7 +77,7 @@ public class YieldPredictionController {
         mlRequest.setAvgTemperature(weather.getAvgTemperature());
         mlRequest.setTotalRainfall(weather.getTotalRainfall());
         mlRequest.setHumidity(weather.getHumidity());
-
+        System.out.println(mlRequest);
         return yieldPredictionService.predict(mlRequest);
     }
 }
