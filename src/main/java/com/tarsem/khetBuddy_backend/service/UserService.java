@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class UserService {
     @Autowired
@@ -45,8 +47,8 @@ public class UserService {
 
 
     public User getCurrentUser() {
-        String username= SecurityContextHolder.getContext()
-                .getAuthentication()
+        String username= Objects.requireNonNull(SecurityContextHolder.getContext()
+                        .getAuthentication())
                 .getName();
 
         return userRepo.findByUsername(username)

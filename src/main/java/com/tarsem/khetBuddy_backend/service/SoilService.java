@@ -3,6 +3,7 @@ package com.tarsem.khetBuddy_backend.service;
 import com.tarsem.khetBuddy_backend.dto.SoilDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -14,14 +15,17 @@ public class SoilService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public SoilService() {
+    @Value("${SOIL_API}")
+    private String apiKey;
 
-        // SoilGrids API Client
+    public SoilService(@Value("${SOIL_API}") String apiKey) {
+
+        this.apiKey = apiKey;
         this.soilClient = WebClient.builder()
-                .baseUrl("https://rest.isric.org")
+                .baseUrl("https://api.gooey.ai")
+                .defaultHeader("Content-Type", "application/json")
                 .build();
 
-        // Open-Meteo API Client
         this.meteoClient = WebClient.builder()
                 .baseUrl("https://api.open-meteo.com")
                 .build();
@@ -31,9 +35,9 @@ public class SoilService {
 
         SoilDataResponse response = new SoilDataResponse();
 
-        response.setNitrogen(fetchSoilProperty(lat, lon, "nitrogen"));
-        response.setPhosphorus(fetchSoilProperty(lat, lon, "phosphorus"));
-        response.setPotassium(fetchSoilProperty(lat, lon, "potassium"));
+        response.setNitrogen(fetchSoilProperty(lat, lon, "nitrogen_total"));
+        response.setPhosphorus(fetchSoilProperty(lat, lon, "phosphorous_extractable"));
+        response.setPotassium(fetchSoilProperty(lat, lon, "potassium_extractable"));
 
         response.setSoilMoisture(fetchSoilMoisture(lat, lon));
 
@@ -43,46 +47,48 @@ public class SoilService {
     private double fetchSoilProperty(double lat, double lon, String property) {
 
         try {
-            String jsonResponse = soilClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/soilgrids/v2.0/properties/query")
-                            .queryParam("lat", lat)
-                            .queryParam("lon", lon)
-                            .queryParam("property", property)
-                            .queryParam("depth", "0-5cm")
-                            .queryParam("value", "mean")
-                            .build())
+
+            String requestBody = """
+                    {
+                      "lat": %f,
+                      "lon": %f
+                    }
+                    """.formatted(lat, lon);
+
+            String jsonResponse = soilClient.post()
+                    .uri("/v2/functions?example_id=s1zad30sloo4")
+                    .header("Authorization", "Bearer " + apiKey)
+                    .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
             JsonNode root = mapper.readTree(jsonResponse);
 
-            return root.path("properties")
-                    .path("layers")
-                    .get(0)
-                    .path("depths")
-                    .get(0)
-                    .path("values")
-                    .path("mean")
-                    .asDouble();
+            String valueWithUnit = root.path("output")
+                    .path("return_value")
+                    .path(property)
+                    .asText();
+
+            return Double.parseDouble(valueWithUnit.split(" ")[0]);
 
         } catch (Exception e) {
 
-            System.out.println("⚠ Soil API failed for property: " + property);
-            System.out.println("Using fallback default values...");
+            System.out.println("⚠ Soil API failed for: " + property);
 
             return switch (property) {
-                case "nitrogen" -> 50.0;
-                case "phosphorus" -> 30.0;
-                case "potassium" -> 40.0;
+                case "nitrogen_total" -> 50.0;
+                case "phosphorous_extractable" -> 30.0;
+                case "potassium_extractable" -> 40.0;
                 default -> 20.0;
             };
         }
     }
+
     private double fetchSoilMoisture(double lat, double lon) {
 
         try {
+
             String jsonResponse = meteoClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/v1/forecast")
@@ -96,15 +102,21 @@ public class SoilService {
 
             JsonNode root = mapper.readTree(jsonResponse);
 
-            return root.path("hourly")
-                    .path("soil_moisture_0_to_1cm")
-                    .get(0)
-                    .asDouble();
+            JsonNode moistureArray = root.path("hourly")
+                    .path("soil_moisture_0_to_1cm");
+
+            double sum = 0;
+
+            for (JsonNode val : moistureArray) {
+                sum += val.asDouble();
+            }
+
+            return sum / moistureArray.size();
+
 
         } catch (Exception e) {
 
-            System.out.println("⚠ Moisture API failed.");
-            System.out.println("Using fallback moisture value...");
+            System.out.println("⚠ Moisture API failed. Using default.");
 
             return 0.25;
         }

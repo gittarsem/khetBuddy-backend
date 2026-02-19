@@ -46,7 +46,9 @@ public class YieldPredictionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         System.out.println("AUTH = " + auth);
-        System.out.println("AUTHORITIES = " + auth.getAuthorities());
+        if (auth != null) {
+            System.out.println("AUTHORITIES = " + auth.getAuthorities());
+        }
 
         User user = userService.getCurrentUser();
 
