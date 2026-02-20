@@ -12,15 +12,14 @@ public class SoilService {
 
     private final WebClient soilClient;
     private final WebClient meteoClient;
-
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Value("${SOIL_API}")
-    private String apiKey;
+    private final String apiKey;
 
     public SoilService(@Value("${SOIL_API}") String apiKey) {
 
         this.apiKey = apiKey;
+
         this.soilClient = WebClient.builder()
                 .baseUrl("https://api.gooey.ai")
                 .defaultHeader("Content-Type", "application/json")
@@ -35,60 +34,60 @@ public class SoilService {
 
         SoilDataResponse response = new SoilDataResponse();
 
-        response.setNitrogen(fetchSoilProperty(lat, lon, "nitrogen_total"));
-        response.setPhosphorus(fetchSoilProperty(lat, lon, "phosphorous_extractable"));
-        response.setPotassium(fetchSoilProperty(lat, lon, "potassium_extractable"));
+        try {
+            JsonNode returnValue = fetchSoilOnce(lat, lon);
+
+            response.setNitrogen(extractValue(returnValue, "nitrogen_total", true));
+            response.setPhosphorus(extractValue(returnValue, "phosphorous_extractable", false));
+            response.setPotassium(extractValue(returnValue, "potassium_extractable", false));
+
+        } catch (Exception e) {
+            response.setNitrogen(50);
+            response.setPhosphorus(30);
+            response.setPotassium(40);
+        }
 
         response.setSoilMoisture(fetchSoilMoisture(lat, lon));
 
         return response;
     }
 
-    private double fetchSoilProperty(double lat, double lon, String property) {
+    private JsonNode fetchSoilOnce(double lat, double lon) throws Exception {
 
-        try {
+        String jsonResponse = soilClient.post()
+                .uri("/v2/functions?example_id=s1zad30sloo4")
+                .header("Authorization", "Bearer " + apiKey)
+                .bodyValue("""
+                        {
+                          "lat": %f,
+                          "lon": %f
+                        }
+                        """.formatted(lat, lon))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
 
-            String requestBody = """
-                    {
-                      "lat": %f,
-                      "lon": %f
-                    }
-                    """.formatted(lat, lon);
+        JsonNode root = mapper.readTree(jsonResponse);
 
-            String jsonResponse = soilClient.post()
-                    .uri("/v2/functions?example_id=s1zad30sloo4")
-                    .header("Authorization", "Bearer " + apiKey)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+        return root.path("output").path("return_value");
+    }
 
-            JsonNode root = mapper.readTree(jsonResponse);
+    private double extractValue(JsonNode returnValue, String property, boolean scaleNitrogen) {
 
-            String valueWithUnit = root.path("output")
-                    .path("return_value")
-                    .path(property)
-                    .asText();
+        String valueWithUnit = returnValue.path(property).asText();
 
-            return Double.parseDouble(valueWithUnit.split(" ")[0]);
+        double value = Double.parseDouble(valueWithUnit.split(" ")[0]);
 
-        } catch (Exception e) {
-
-            System.out.println("⚠ Soil API failed for: " + property);
-
-            return switch (property) {
-                case "nitrogen_total" -> 50.0;
-                case "phosphorous_extractable" -> 30.0;
-                case "potassium_extractable" -> 40.0;
-                default -> 20.0;
-            };
+        if (scaleNitrogen) {
+            value = value * 100;
         }
+
+        return value;
     }
 
     private double fetchSoilMoisture(double lat, double lon) {
 
         try {
-
             String jsonResponse = meteoClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/v1/forecast")
@@ -106,18 +105,13 @@ public class SoilService {
                     .path("soil_moisture_0_to_1cm");
 
             double sum = 0;
-
             for (JsonNode val : moistureArray) {
                 sum += val.asDouble();
             }
 
             return sum / moistureArray.size();
 
-
         } catch (Exception e) {
-
-            System.out.println("⚠ Moisture API failed. Using default.");
-
             return 0.25;
         }
     }

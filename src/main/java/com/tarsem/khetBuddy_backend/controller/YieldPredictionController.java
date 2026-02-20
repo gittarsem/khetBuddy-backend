@@ -74,7 +74,7 @@ public class YieldPredictionController {
         mlRequest.setPotassium(soil.getPotassium());
 
         mlRequest.setSoilPh(Double.parseDouble(user.getPh_level()));
-        mlRequest.setSoilMoisture(soil.getSoilMoisture());
+        mlRequest.setSoilMoisture(soil.getSoilMoisture() * 100);
 
         mlRequest.setAvgTemperature(weather.getAvgTemperature());
         mlRequest.setTotalRainfall(weather.getTotalRainfall());
