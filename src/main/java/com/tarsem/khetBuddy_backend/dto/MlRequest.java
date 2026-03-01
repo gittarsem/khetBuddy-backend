@@ -23,7 +23,7 @@ public class MlRequest {
     private double soilPh;
 
     @JsonProperty("soil_moisture")
-    private double soilMoisture;
+    private float soilMoisture;
 
     @JsonProperty("irrigation_type")
     private String irrigationType;

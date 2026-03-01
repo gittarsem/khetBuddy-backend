@@ -1,6 +1,7 @@
 package com.tarsem.khetBuddy_backend.controller;
 
 import com.tarsem.khetBuddy_backend.dto.*;
+import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.User;
 import com.tarsem.khetBuddy_backend.service.JwtService;
 import com.tarsem.khetBuddy_backend.service.UserService;
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     @PutMapping("/updateProfile")
-    public User updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
+    public Farm updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
                               Principal principal){
         String username=principal.getName();
         return userService.updateUser(profileUpdateRequest,username);

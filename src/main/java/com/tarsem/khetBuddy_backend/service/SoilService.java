@@ -85,7 +85,7 @@ public class SoilService {
         return value;
     }
 
-    private double fetchSoilMoisture(double lat, double lon) {
+    private float fetchSoilMoisture(double lat, double lon) {
 
         try {
             String jsonResponse = meteoClient.get()
@@ -109,10 +109,10 @@ public class SoilService {
                 sum += val.asDouble();
             }
 
-            return sum / moistureArray.size();
+            return (float) sum / moistureArray.size();
 
         } catch (Exception e) {
-            return 0.25;
+            return (float) 0.25f;
         }
     }
 }

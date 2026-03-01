@@ -11,5 +11,5 @@ public class SoilDataResponse {
     private double nitrogen;
     private double phosphorus;
     private double potassium;
-    private double soilMoisture;
+    private float soilMoisture;
 }

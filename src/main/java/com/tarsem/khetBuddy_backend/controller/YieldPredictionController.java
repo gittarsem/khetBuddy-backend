@@ -1,7 +1,9 @@
 package com.tarsem.khetBuddy_backend.controller;
 
 import com.tarsem.khetBuddy_backend.dto.*;
+import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.User;
+import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,9 @@ public class YieldPredictionController {
     @Autowired
     private LocationService locationService;
 
+    @Autowired
+    private FarmRepo farmRepo;
+
     public static String getSeason() {
 
         int month = LocalDate.now().getMonthValue();
@@ -51,9 +56,10 @@ public class YieldPredictionController {
         }
 
         User user = userService.getCurrentUser();
-
-        Double latitude = user.getLatitude();
-        Double longitude = user.getLongitude();
+        Farm farm=farmRepo.findByUser(user)
+                .orElseThrow(()->new RuntimeException("Farm does not exist"));
+        Double latitude = farm.getLatitude();
+        Double longitude = farm.getLongitude();
 
         SoilDataResponse soil = soilService.getSoilData(latitude, longitude);
 
@@ -63,17 +69,17 @@ public class YieldPredictionController {
 
         MlRequest mlRequest = new MlRequest();
 
-        mlRequest.setCropType(user.getCrop());
+        mlRequest.setCropType(farm.getCrop());
         mlRequest.setSeason(getSeason());
         mlRequest.setDistrict(location.getDistrict());
 
-        mlRequest.setIrrigationType(user.getIrrigation_type());
+        mlRequest.setIrrigationType(farm.getIrrigationType());
 
         mlRequest.setNitrogen(soil.getNitrogen());
         mlRequest.setPhosphorus(soil.getPhosphorus());
         mlRequest.setPotassium(soil.getPotassium());
 
-        mlRequest.setSoilPh(Double.parseDouble(user.getPh_level()));
+        mlRequest.setSoilPh(Double.parseDouble(String.valueOf(farm.getPhLevel())));
         mlRequest.setSoilMoisture(soil.getSoilMoisture() * 100);
 
         mlRequest.setAvgTemperature(weather.getAvgTemperature());

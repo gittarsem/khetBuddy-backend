@@ -1,9 +1,14 @@
 package com.tarsem.khetBuddy_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,19 +19,13 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
     private String username;
+    @JsonIgnore
     private String password;
 
-    private int total_land;
-    private String irrigation_type;
-    private String ph_level;
-
-    private String crop;
-
-    public Double latitude;
-    public Double longitude;
-
-
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Farm> farms = new ArrayList<>();
 }
