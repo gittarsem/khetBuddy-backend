@@ -23,30 +23,11 @@ public class YieldPredictionController {
     private UserService userService;
 
     @Autowired
-    private SoilService soilService;
-
-    @Autowired
-    private WeatherService weatherService;
-
-    @Autowired
-    private LocationService locationService;
-
-    @Autowired
     private FarmRepo farmRepo;
 
-    public static String getSeason() {
 
-        int month = LocalDate.now().getMonthValue();
-
-        if (month >= 6 && month <= 10) {
-            return "Kharif";
-        } else {
-            return "Rabi";
-        }
-    }
-
-    @PostMapping("/predict")
-    public MlResponse predictYield() {
+    @PostMapping("/predict/{farmId}")
+    public MlResponse predictYield(@PathVariable Long farmId) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -56,36 +37,18 @@ public class YieldPredictionController {
         }
 
         User user = userService.getCurrentUser();
-        Farm farm=farmRepo.findByUser(user)
-                .orElseThrow(()->new RuntimeException("Farm does not exist"));
+
+        Farm farm=farmRepo.findById(farmId)
+                .orElseThrow(()-> new RuntimeException("Farm does not exist"));
         Double latitude = farm.getLatitude();
         Double longitude = farm.getLongitude();
 
-        SoilDataResponse soil = soilService.getSoilData(latitude, longitude);
-
-        WeatherResponse weather = weatherService.getWeather(latitude, longitude);
-
-        LocationResponse location = locationService.getInfo(latitude, longitude);
-
         MlRequest mlRequest = new MlRequest();
-
         mlRequest.setCropType(farm.getCrop());
-        mlRequest.setSeason(getSeason());
-        mlRequest.setDistrict(location.getDistrict());
-
         mlRequest.setIrrigationType(farm.getIrrigationType());
-
-        mlRequest.setNitrogen(soil.getNitrogen());
-        mlRequest.setPhosphorus(soil.getPhosphorus());
-        mlRequest.setPotassium(soil.getPotassium());
-
-        mlRequest.setSoilPh(Double.parseDouble(String.valueOf(farm.getPhLevel())));
-        mlRequest.setSoilMoisture(soil.getSoilMoisture() * 100);
-
-        mlRequest.setAvgTemperature(weather.getAvgTemperature());
-        mlRequest.setTotalRainfall(weather.getTotalRainfall());
-        mlRequest.setHumidity(weather.getHumidity());
+        mlRequest.setLatitude(latitude);
+        mlRequest.setLongitude(longitude);
         System.out.println(mlRequest);
-        return yieldPredictionService.predict(mlRequest);
+        return yieldPredictionService.predict(mlRequest,farmId);
     }
 }

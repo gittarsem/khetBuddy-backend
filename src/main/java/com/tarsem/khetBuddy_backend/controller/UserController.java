@@ -2,7 +2,6 @@ package com.tarsem.khetBuddy_backend.controller;
 
 import com.tarsem.khetBuddy_backend.dto.*;
 import com.tarsem.khetBuddy_backend.model.Farm;
-import com.tarsem.khetBuddy_backend.model.User;
 import com.tarsem.khetBuddy_backend.service.JwtService;
 import com.tarsem.khetBuddy_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +61,10 @@ public class UserController {
     }
 
     @PutMapping("/updateProfile")
-    public Farm updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
+    public Farm updateProfile(@RequestBody FarmDetails farmDetails,
                               Principal principal){
         String username=principal.getName();
-        return userService.updateUser(profileUpdateRequest,username);
+        return userService.updateUser(farmDetails,username);
     }
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(

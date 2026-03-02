@@ -1,6 +1,6 @@
 package com.tarsem.khetBuddy_backend.service;
 
-import com.tarsem.khetBuddy_backend.dto.ProfileUpdateRequest;
+import com.tarsem.khetBuddy_backend.dto.FarmDetails;
 import com.tarsem.khetBuddy_backend.dto.RegisterRequest;
 import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.User;
@@ -35,25 +35,19 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public Farm updateUser(ProfileUpdateRequest profileUpdateRequest, String username) {
+    public Farm updateUser(FarmDetails farmDetails, String username) {
         User user=userRepo.findByUsername(username)
                 .orElseThrow(() ->
                         new RuntimeException("User not found: " + username));
-            Farm farm=farmRepo.findByUser(user)
-                    .orElse(null);
-            if(farm==null){
-                farm=new Farm();
-                farm.setUser(user);
-            }
+        Farm farm= new Farm();
 
-        farm.setLatitude(profileUpdateRequest.getLatitude());
-        farm.setLongitude(profileUpdateRequest.getLongitude());
-        farm.setTotalLand(profileUpdateRequest.getTotal_land());
-        farm.setIrrigationType(profileUpdateRequest.getIrrigation_type());
-        farm.setPhLevel(Double.parseDouble(profileUpdateRequest.getPh_level()));
-        farm.setCrop(profileUpdateRequest.getCrop());
         farm.setUser(user);
-
+        farm.setLatitude(farmDetails.getLatitude());
+        farm.setLongitude(farmDetails.getLongitude());
+        farm.setTotalLand(farmDetails.getTotal_land());
+        farm.setIrrigationType(farmDetails.getIrrigation_type());
+        farm.setPhLevel(Double.parseDouble(farmDetails.getPh_level()));
+        farm.setCrop(farmDetails.getCrop());
 
 
         return farmRepo.save(farm);

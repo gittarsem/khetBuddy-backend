@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileUpdateRequest {
+public class FarmDetails {
 
 
     private int total_land;

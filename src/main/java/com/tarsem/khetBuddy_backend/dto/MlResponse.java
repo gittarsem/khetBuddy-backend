@@ -9,11 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MlResponse {
+
     @JsonProperty("crop_type")
     private String cropType;
 
-    private String district;
     private String season;
+
+    private Location location;
+
+    private Soil soil;
 
     @JsonProperty("yield_per_hectare")
     private YieldPerHectare yieldPerHectare;
@@ -27,11 +31,39 @@ public class MlResponse {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class Location {
+
+        private String district;
+        private String state;
+        private double latitude;
+        private double longitude;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Soil {
+
+        private double nitrogen;
+        private double phosphorus;
+        private double potassium;
+
+        @JsonProperty("soil_ph")
+        private double soilPh;
+
+        @JsonProperty("soil_moisture")
+        private double soilMoisture;
+
+        private String source;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class YieldPerHectare {
+
         private double lower;
         private double expected;
         private double higher;
-
-
     }
 }
