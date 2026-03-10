@@ -6,6 +6,7 @@ import com.tarsem.khetBuddy_backend.model.User;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,15 @@ public class YieldPredictionController {
         mlRequest.setLongitude(longitude);
         System.out.println(mlRequest);
         return yieldPredictionService.predict(mlRequest,farmId);
+    }
+
+    @GetMapping("/history/{farmId}")
+    public Page<YieldPredictionDTO> getHistory(
+            @PathVariable Long farmId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        System.out.println("API HIT");
+        return yieldPredictionService.getHistory(farmId,page,size);
     }
 }

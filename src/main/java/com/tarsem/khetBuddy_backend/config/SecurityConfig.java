@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/yield/**")
                         .authenticated()
 
+
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

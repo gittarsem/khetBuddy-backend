@@ -2,11 +2,15 @@ package com.tarsem.khetBuddy_backend.service;
 
 import com.tarsem.khetBuddy_backend.dto.MlRequest;
 import com.tarsem.khetBuddy_backend.dto.MlResponse;
+import com.tarsem.khetBuddy_backend.dto.YieldPredictionDTO;
 import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.YieldPrediction;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.repo.YieldPredictionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -82,5 +86,22 @@ public class YieldPredictionService {
         entity.setCreatedAt(LocalDateTime.now());
 
         yieldPredictionRepo.save(entity);
+    }
+
+    public Page<YieldPredictionDTO> getHistory(Long farmId, int page, int size) {
+        Page<YieldPrediction> pageData= yieldPredictionRepo.findByFarmId(farmId,
+                PageRequest.of(page,size, Sort.by("createdAt").descending()));
+        return pageData.map(this::convertToDTO);
+    }
+
+    private YieldPredictionDTO convertToDTO(YieldPrediction yieldPrediction) {
+        YieldPredictionDTO dto=new YieldPredictionDTO();
+        dto.setId(yieldPrediction.getId());
+        dto.setYieldLower(yieldPrediction.getYieldLower());
+        dto.setYieldHigher(yieldPrediction.getYieldHigher());
+        dto.setYieldExpected(yieldPrediction.getYieldExpected());
+        dto.setCropType(yieldPrediction.getCropType());
+        dto.setCreatedAt(yieldPrediction.getCreatedAt());
+        return dto;
     }
 }
