@@ -1,7 +1,6 @@
 package com.tarsem.khetBuddy_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +31,5 @@ public class Farm {
     @ManyToOne
     @JoinColumn(name="user_id")
     @JsonBackReference
-    private User user;
+    private UserEntity userEntity;
 }

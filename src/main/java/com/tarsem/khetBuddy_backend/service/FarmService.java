@@ -3,7 +3,7 @@ package com.tarsem.khetBuddy_backend.service;
 import com.tarsem.khetBuddy_backend.dto.FarmDetails;
 import com.tarsem.khetBuddy_backend.dto.LocationResponse;
 import com.tarsem.khetBuddy_backend.model.Farm;
-import com.tarsem.khetBuddy_backend.model.User;
+import com.tarsem.khetBuddy_backend.model.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FarmService {
@@ -27,15 +26,15 @@ public class FarmService {
 
     public List<Farm> getFarm(Authentication authentication) {
         String username= authentication.getName();
-        User user=userRepo.findByUsername(username)
+        UserEntity userEntity =userRepo.findByUsername(username)
                 .orElseThrow(()-> new RuntimeException("User not found"));
-        return farmRepo.findByUser(user);
+        return farmRepo.findByUserEntity(userEntity);
 
     }
 
     public Farm addFarm(FarmDetails farmDetails, Authentication authentication) {
         String username=authentication.getName();
-        User user = userRepo.findByUsername(username)
+        UserEntity userEntity = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Farm farm = new Farm();
@@ -43,7 +42,7 @@ public class FarmService {
         LocationResponse locationResponse=locationService.getInfo(farmDetails.getLatitude()
                 ,farmDetails.getLongitude());
 
-        farm.setUser(user);
+        farm.setUserEntity(userEntity);
         farm.setLatitude(farmDetails.getLatitude());
         farm.setLongitude(farmDetails.getLongitude());
         farm.setTotalLand(farmDetails.getTotal_land());

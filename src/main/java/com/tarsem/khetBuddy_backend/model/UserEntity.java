@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,10 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Farm> farms = new ArrayList<>();
+
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private FarmerDetails farmerDetails;
 }

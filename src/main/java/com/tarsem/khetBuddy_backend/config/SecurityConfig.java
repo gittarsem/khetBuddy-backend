@@ -39,7 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/register", "/login", "/refresh", "/location/**")
+                        .requestMatchers("/auth/**","/register", "/login", "/refresh", "/location/**")
                         .permitAll()
 
                         .requestMatchers("/api/yield/**")

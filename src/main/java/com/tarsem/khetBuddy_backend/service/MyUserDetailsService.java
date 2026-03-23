@@ -1,7 +1,7 @@
 package com.tarsem.khetBuddy_backend.service;
 
 
-import com.tarsem.khetBuddy_backend.model.User;
+import com.tarsem.khetBuddy_backend.model.UserEntity;
 import com.tarsem.khetBuddy_backend.model.UserPrincipal;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +18,15 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user =userRepo.findByUsername(username)
+        UserEntity userEntity =userRepo.findByUsername(username)
                 .orElseThrow(() ->
                         new RuntimeException("User not found: " + username));
 
-        if(user==null){
+        if(userEntity ==null){
             System.out.println("Login attempt for: " + username);
             throw new UsernameNotFoundException("User 404");
         }
 
-        return new UserPrincipal(user);
+        return new UserPrincipal(userEntity);
     }
 }

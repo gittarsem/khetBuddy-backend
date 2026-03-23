@@ -11,11 +11,14 @@ import java.util.Collections;
 
 public class UserPrincipal implements UserDetails {
 
-    private User user;
-    public UserPrincipal(User user){
-        this.user=user;
+    private UserEntity userEntity;
+    public UserPrincipal(UserEntity userEntity){
+        this.userEntity = userEntity;
     }
 
+    public UserEntity getUser(){
+        return this.userEntity;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
@@ -23,12 +26,12 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return user.getPassword();
+        return userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userEntity.getUsername();
     }
     @Override
     public boolean isAccountNonExpired() {
