@@ -1,4 +1,4 @@
-package com.tarsem.khetBuddy_backend.service;
+package com.tarsem.khetBuddy_backend.service.microservices;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

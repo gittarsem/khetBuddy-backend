@@ -1,7 +1,7 @@
 package com.tarsem.khetBuddy_backend.controller;
 
 import com.tarsem.khetBuddy_backend.dto.WeatherResponse;
-import com.tarsem.khetBuddy_backend.service.WeatherService;
+import com.tarsem.khetBuddy_backend.service.microservices.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

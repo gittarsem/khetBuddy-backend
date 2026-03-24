@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MlResponse {
+public class YieldMlResponse {
 
     @JsonProperty("crop_type")
     private String cropType;

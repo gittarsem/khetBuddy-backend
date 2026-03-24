@@ -1,4 +1,4 @@
-package com.tarsem.khetBuddy_backend.service;
+package com.tarsem.khetBuddy_backend.service.microservices;
 
 import com.tarsem.khetBuddy_backend.dto.LocationResponse;
 import com.fasterxml.jackson.databind.JsonNode;

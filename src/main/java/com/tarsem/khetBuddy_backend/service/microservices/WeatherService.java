@@ -1,4 +1,4 @@
-package com.tarsem.khetBuddy_backend.service;
+package com.tarsem.khetBuddy_backend.service.microservices;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
