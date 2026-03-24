@@ -1,7 +1,7 @@
 package com.tarsem.khetBuddy_backend.service;
 
-import com.tarsem.khetBuddy_backend.dto.MlRequest;
-import com.tarsem.khetBuddy_backend.dto.MlResponse;
+import com.tarsem.khetBuddy_backend.dto.YieldMlRequest;
+import com.tarsem.khetBuddy_backend.dto.YieldMlResponse;
 import com.tarsem.khetBuddy_backend.dto.YieldPredictionDTO;
 import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.YieldPrediction;
@@ -35,13 +35,13 @@ public class YieldPredictionService {
                 .build();
     }
 
-    public MlResponse predict(MlRequest request,Long farmId) {
+    public YieldMlResponse predict(YieldMlRequest request, Long farmId) {
         try {
-            MlResponse response= webClient.post()
+            YieldMlResponse response= webClient.post()
                     .uri("/api/predict")
                     .bodyValue(request)
                     .retrieve()
-                    .bodyToMono(MlResponse.class)
+                    .bodyToMono(YieldMlResponse.class)
                     .timeout(Duration.ofSeconds(60))
                     .retry(1)
                     .block();
@@ -57,7 +57,7 @@ public class YieldPredictionService {
 
     }
 
-    public void saveMlResponse(MlResponse response,Long farmId){
+    public void saveMlResponse(YieldMlResponse response, Long farmId){
         YieldPrediction entity = new YieldPrediction();
         Farm farm=farmRepo.findById(farmId)
                 .orElseThrow(()-> new RuntimeException("Farm not found"));

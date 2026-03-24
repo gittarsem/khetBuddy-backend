@@ -11,4 +11,5 @@ public class FarmerUpdateProfileRequestDTO {
     private String firstName;
     private String lastName;
     private String phoneNo;
+
 }

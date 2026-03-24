@@ -6,6 +6,7 @@ import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
+import com.tarsem.khetBuddy_backend.service.microservices.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

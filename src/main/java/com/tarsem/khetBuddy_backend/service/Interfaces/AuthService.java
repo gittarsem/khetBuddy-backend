@@ -1,9 +1,7 @@
 package com.tarsem.khetBuddy_backend.service.Interfaces;
 
-import com.tarsem.khetBuddy_backend.dto.AuthResponse;
-import com.tarsem.khetBuddy_backend.dto.LoginRequest;
-import com.tarsem.khetBuddy_backend.dto.RefreshRequest;
-import com.tarsem.khetBuddy_backend.dto.RegisterRequest;
+import com.tarsem.khetBuddy_backend.dto.*;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
@@ -11,4 +9,5 @@ public interface AuthService {
 
     AuthResponse login(LoginRequest loginRequest);
 
+    String updatePassword(ChangePasswordRequestDTO changePasswordRequestDTO);
 }

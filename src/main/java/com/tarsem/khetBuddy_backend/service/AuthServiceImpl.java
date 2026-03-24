@@ -1,10 +1,7 @@
 package com.tarsem.khetBuddy_backend.service;
 
 import com.tarsem.khetBuddy_backend.Exception.BadUsernamePassword;
-import com.tarsem.khetBuddy_backend.dto.AuthResponse;
-import com.tarsem.khetBuddy_backend.dto.LoginRequest;
-import com.tarsem.khetBuddy_backend.dto.RefreshRequest;
-import com.tarsem.khetBuddy_backend.dto.RegisterRequest;
+import com.tarsem.khetBuddy_backend.dto.*;
 import com.tarsem.khetBuddy_backend.model.UserEntity;
 import com.tarsem.khetBuddy_backend.model.UserPrincipal;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
@@ -13,12 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.export.UnableToRegisterMBeanException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -75,6 +75,38 @@ public class AuthServiceImpl implements AuthService {
         } catch (BadUsernamePassword e) {
             throw new RuntimeException("Invalid username or password");
         }
+    }
+
+    @Override
+    @Transactional
+    public String updatePassword(ChangePasswordRequestDTO requestDTO) {
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            requestDTO.getUsername(),
+                            requestDTO.getPassword()
+                    )
+            );
+
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            UserEntity user = userPrincipal.getUser();
+
+            if (requestDTO.getNewPassword() == null || requestDTO.getNewPassword().isEmpty()
+            || requestDTO.getPassword().equals(requestDTO.getNewPassword())) {
+                throw new RuntimeException("New password cannot be empty or same");
+            }
+
+            user.setPassword(passwordEncoder.encode(requestDTO.getNewPassword()));
+
+            userRepo.save(user);
+
+            return "Password Changed Successfully";
+
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Invalid current password");
+        }
+
     }
 
 

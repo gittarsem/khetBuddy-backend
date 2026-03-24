@@ -2,19 +2,22 @@ package com.tarsem.khetBuddy_backend.service;
 
 import com.tarsem.khetBuddy_backend.Exception.ResourceNotFoundException;
 import com.tarsem.khetBuddy_backend.Exception.UnAuthorisedException;
+import com.tarsem.khetBuddy_backend.dto.FarmerProfileResponseDTO;
 import com.tarsem.khetBuddy_backend.dto.FarmerUpdateProfileRequestDTO;
 import com.tarsem.khetBuddy_backend.dto.FarmerUpdateProfileResponseDTO;
 import com.tarsem.khetBuddy_backend.dto.ProfilePicDTO;
 import com.tarsem.khetBuddy_backend.model.FarmerDetails;
 import com.tarsem.khetBuddy_backend.model.UserEntity;
-import com.tarsem.khetBuddy_backend.model.UserPrincipal;
 import com.tarsem.khetBuddy_backend.repo.FarmerDetailsRepo;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.tarsem.khetBuddy_backend.Utils.AppUtils.giveMeCurrentUser;
 
 
 @Service
@@ -25,8 +28,7 @@ public class FarmerServiceImpl implements FarmerService {
    private final FarmerDetailsRepo farmerDetailsRepo;
     @Override
     public FarmerUpdateProfileResponseDTO farmerDetailsUpdate(FarmerUpdateProfileRequestDTO requestDTO, String imageUrl) {
-        UserPrincipal userPrincipal=(UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity user=userPrincipal.getUser();
+        UserEntity user=giveMeCurrentUser();
         if(user==null) throw new RuntimeException("User not Exist");
         FarmerDetails farmer=modelMapper.map(requestDTO,FarmerDetails.class);
         farmer.setProfileImage(imageUrl);
@@ -37,12 +39,9 @@ public class FarmerServiceImpl implements FarmerService {
     }
 
     @Override
-    public ProfilePicDTO getProfileImage(Long farmerId)  {
-        UserPrincipal userPrincipal=(UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity user=userPrincipal.getUser();
-        FarmerDetails farmerDetails=farmerDetailsRepo.findById(farmerId).orElseThrow(
-                ()-> new ResourceNotFoundException("Farmer does not exist")
-        );
+    public ProfilePicDTO getProfileImage()  {
+        UserEntity user=giveMeCurrentUser();
+        FarmerDetails farmerDetails=farmerDetailsRepo.findByUserEntity(user);
         if(farmerDetails.getUserEntity()==null ||
                 !user.getId().equals(farmerDetails.getUserEntity().getId())){
             throw new UnAuthorisedException("Farmer does not have access");
@@ -53,12 +52,10 @@ public class FarmerServiceImpl implements FarmerService {
     }
 
     @Override
-    public ProfilePicDTO updateProfilePic(Long farmerId, String imageUrl) {
-        UserPrincipal userPrincipal=(UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity user=userPrincipal.getUser();
-        FarmerDetails farmerDetails=farmerDetailsRepo.findById(farmerId).orElseThrow(
-                ()-> new ResourceNotFoundException("Farmer does not exist")
-        );
+    @Transactional
+    public ProfilePicDTO updateProfilePic(String imageUrl) {
+        UserEntity user=giveMeCurrentUser();
+        FarmerDetails farmerDetails=farmerDetailsRepo.findByUserEntity(user);
         if(farmerDetails.getUserEntity()==null ||
                 !user.getId().equals(farmerDetails.getUserEntity().getId())){
             throw new UnAuthorisedException("Farmer does not have access");
@@ -72,15 +69,32 @@ public class FarmerServiceImpl implements FarmerService {
     }
 
     @Override
-    public FarmerUpdateProfileResponseDTO farmerUpdateDetailsUpdate(FarmerUpdateProfileRequestDTO requestDTO) {
-        UserPrincipal userPrincipal=(UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity user=userPrincipal.getUser();
-        if(user==null) throw new RuntimeException("User not Exist");
-        FarmerDetails farmer=modelMapper.map(requestDTO,FarmerDetails.class);
-        farmer.setUserEntity(user);
+    @Transactional
+    public FarmerUpdateProfileResponseDTO farmerUpdateDetailsUpdate(FarmerUpdateProfileRequestDTO dto) {
+        UserEntity user=giveMeCurrentUser();
+        FarmerDetails farmer = farmerDetailsRepo.findByUserEntity(user);
+        if (dto.getFirstName() != null) {
+            farmer.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null) {
+            farmer.setLastName(dto.getLastName());
+        }
+
+        if (dto.getPhoneNo() != null) {
+            farmer.setPhoneNo(dto.getPhoneNo());
+        }
         farmerDetailsRepo.save(farmer);
         return modelMapper.map(farmer, FarmerUpdateProfileResponseDTO.class);
+    }
 
+    @Override
+    public @Nullable FarmerProfileResponseDTO getFarmerDetails() {
+        UserEntity user=giveMeCurrentUser();
+        FarmerDetails farmerDetails= farmerDetailsRepo.findByUserEntity(user);
+        FarmerProfileResponseDTO farmerDTO=modelMapper.map(farmerDetails, FarmerProfileResponseDTO.class);
+        farmerDTO.setEmail(user.getUsername());
+        return farmerDTO;
     }
 
 
