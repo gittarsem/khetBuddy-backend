@@ -5,6 +5,8 @@ import com.tarsem.khetBuddy_backend.model.Farm;
 import com.tarsem.khetBuddy_backend.model.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/yield")
+@Tag(name = "Yield Prediction Controller", description = "APIs for crop yield prediction and history tracking")
 public class YieldPredictionController {
 
     @Autowired
@@ -26,7 +29,11 @@ public class YieldPredictionController {
 
 
     @PostMapping("/predict/{farmId}")
-    public MlResponse predictYield(@PathVariable Long farmId) {
+    @Operation(
+            summary = "Predict crop yield",
+            description = "Generates yield prediction for a specific farm using its details"
+    )
+    public YieldMlResponse predictYield(@PathVariable Long farmId) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -42,16 +49,20 @@ public class YieldPredictionController {
         Double latitude = farm.getLatitude();
         Double longitude = farm.getLongitude();
 
-        MlRequest mlRequest = new MlRequest();
-        mlRequest.setCropType(farm.getCrop());
-        mlRequest.setIrrigationType(farm.getIrrigationType());
-        mlRequest.setLatitude(latitude);
-        mlRequest.setLongitude(longitude);
-        System.out.println(mlRequest);
-        return yieldPredictionService.predict(mlRequest,farmId);
+        YieldMlRequest yieldMlRequest = new YieldMlRequest();
+        yieldMlRequest.setCropType(farm.getCrop());
+        yieldMlRequest.setIrrigationType(farm.getIrrigationType());
+        yieldMlRequest.setLatitude(latitude);
+        yieldMlRequest.setLongitude(longitude);
+        System.out.println(yieldMlRequest);
+        return yieldPredictionService.predict(yieldMlRequest,farmId);
     }
 
     @GetMapping("/history/{farmId}")
+    @Operation(
+            summary = "Get prediction history",
+            description = "Fetches paginated history of yield predictions for a farm"
+    )
     public Page<YieldPredictionDTO> getHistory(
             @PathVariable Long farmId,
             @RequestParam int page,

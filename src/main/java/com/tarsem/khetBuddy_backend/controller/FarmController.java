@@ -2,33 +2,46 @@ package com.tarsem.khetBuddy_backend.controller;
 
 import com.tarsem.khetBuddy_backend.dto.FarmDetails;
 import com.tarsem.khetBuddy_backend.model.Farm;
-
 import com.tarsem.khetBuddy_backend.service.FarmService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/farm")
+@Tag(name = "Farm Controller", description = "APIs for managing user farms")
 public class FarmController {
+
     @Autowired
     private FarmService farmService;
 
     @GetMapping("/my-farms")
+    @Operation(
+            summary = "Get user farms",
+            description = "Fetches all farms associated with the authenticated user"
+    )
     public List<Farm> getFarm(Authentication authentication){
         return farmService.getFarm(authentication);
     }
 
     @PostMapping("/add")
+    @Operation(
+            summary = "Add new farm",
+            description = "Creates a new farm for the authenticated user"
+    )
     public Farm addFarm(@RequestBody FarmDetails farmDetails,
-                                  Authentication authentication){
+                        Authentication authentication){
         return farmService.addFarm(farmDetails,authentication);
     }
 
     @DeleteMapping("/delete/{farmId}")
+    @Operation(
+            summary = "Delete farm",
+            description = "Deletes a farm using its ID"
+    )
     public String deleteFarm(@PathVariable Long farmId){
         farmService.deleteFarm(farmId);
         return "Farm deleted: "+farmId;

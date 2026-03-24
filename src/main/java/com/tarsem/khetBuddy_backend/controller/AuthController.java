@@ -11,15 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 @Slf4j
-@Tag(name = "Auth Controller",description = "User Authentication")
+@Tag(name = "Auth Controller", description = "User Authentication APIs")
 public class AuthController {
 
     @Autowired
@@ -32,19 +29,28 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @PostMapping("/signUp")
-    @Operation(summary = "Sign up a new user", description = "Creates a new user account.")
+    @Operation(
+            summary = "Sign up a new user",
+            description = "Creates a new user account"
+    )
     public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
         return ResponseEntity.ok(authService.addNewUser(registerRequest));
     }
 
     @PostMapping("/login")
-    @Operation(summary = "User login", description = "Authenticates a user and returns an JWT token.")
+    @Operation(
+            summary = "User login",
+            description = "Authenticates user and returns JWT token"
+    )
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "Refresh access token", description = "Generates a new access token using a refresh token.")
+    @Operation(
+            summary = "Refresh access token",
+            description = "Generates new access token using refresh token"
+    )
     public ResponseEntity<RefreshDTO> refreshToken(
             @RequestBody RefreshRequest request
     ) {
@@ -56,9 +62,18 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(null);
         }
-       String accessToken=jwtService.generateAccessToken(username);
+        String accessToken=jwtService.generateAccessToken(username);
         return ResponseEntity.ok(new RefreshDTO(accessToken));
 
+    }
+
+    @PatchMapping("/changePassword")
+    @Operation(
+            summary = "Change password",
+            description = "Updates the user's password"
+    )
+    public ResponseEntity<String> updatePassword(@RequestBody ChangePasswordRequestDTO request){
+        return ResponseEntity.ok(authService.updatePassword(request));
     }
 
 }
