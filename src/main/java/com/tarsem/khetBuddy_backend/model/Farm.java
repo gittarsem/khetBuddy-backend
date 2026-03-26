@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name="farms")
 @Data
@@ -28,6 +30,8 @@ public class Farm {
 
     private String district;
 
+
+    private LocalDate sowing_date;
     @ManyToOne
     @JoinColumn(name="user_id")
     @JsonBackReference
