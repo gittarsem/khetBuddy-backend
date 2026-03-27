@@ -13,5 +13,5 @@ public class IrrigationScheduleDTO {
 
     private double totalHours;
     private int totalCycles;
-    private List<DayPlan> days;
+    private List<FarmerDayPlan> days;
 }

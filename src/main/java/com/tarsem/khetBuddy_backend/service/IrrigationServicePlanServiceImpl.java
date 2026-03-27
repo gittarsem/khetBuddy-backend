@@ -27,7 +27,7 @@ public class IrrigationServicePlanServiceImpl implements IrrigationPlanService {
     public IrrigationUserResponseService userResponseService;
 
     @Override
-    public void getImmediatePlan(Long farmId, IrrigationPlanRequestDTO requestDTO) {
+    public IrrigationAdviceDTO getImmediatePlan(Long farmId, IrrigationPlanRequestDTO requestDTO) {
         Farm farm=farmRepo.findById(farmId).orElseThrow(
                 ()->new ResourceNotFoundException("Farm with this id does not exist")
         );
@@ -44,10 +44,31 @@ public class IrrigationServicePlanServiceImpl implements IrrigationPlanService {
                         requestDTO.getField_unit(),requestDTO.getPump_type()
                 )
         );
-        System.out.println(mlrequestDTO);
         MLImmediateResult mlresult=mlService.getImmediateRecommendation(mlrequestDTO);
-        System.out.println(mlresult);
-        IrrigationAdviceDTO result=userResponseService.buildImmediateResponse(requestDTO,mlresult,farm);
+        return userResponseService.buildImmediateResponse(requestDTO,mlresult,farm);
+
+    }
+
+    @Override
+    public FarmerScheduleResponse generateSchedule(Long farmId, IrrigationPlanRequestDTO requestDTO) {
+        Farm farm=farmRepo.findById(farmId).orElseThrow(
+                ()->new ResourceNotFoundException("Farm with this id does not exist")
+        );
+        farm.setSowing_date(requestDTO.getSowing_date());
+        farmRepo.save(farm);
+        IrrigationMLRequestDTo mlrequestDTO=new IrrigationMLRequestDTo();
+        mlrequestDTO.setCrop(farm.getCrop());
+        mlrequestDTO.setDistrict(farm.getDistrict());
+        mlrequestDTO.setStage(getCropStage(farm.getCrop(),requestDTO.getSowing_date()));
+        mlrequestDTO.setLastIrrigationDay(requestDTO.getLastIrrigationDay());
+        mlrequestDTO.setLast_week_irrigation_mm(
+                calculateLastWeekIrrigationMm(
+                        requestDTO.getDaily_avg(), farm.getTotalLand(),
+                        requestDTO.getField_unit(),requestDTO.getPump_type()
+                )
+        );
+        MLScheduleResult mlresult=mlService.getSchedule((mlrequestDTO));
+        return userResponseService.buildFarmerSchedule(requestDTO,mlresult,farm);
 
     }
 }

@@ -4,13 +4,11 @@ import com.tarsem.khetBuddy_backend.dto.IrrigationMLRequestDTo;
 import com.tarsem.khetBuddy_backend.dto.MLDayPlan;
 import com.tarsem.khetBuddy_backend.dto.MLImmediateResult;
 import com.tarsem.khetBuddy_backend.dto.MLScheduleResult;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,109 +25,74 @@ public class IrrigationMLService {
     }
 
     public MLImmediateResult getImmediateRecommendation(IrrigationMLRequestDTo request) {
-        try {
-            @Nullable Map response = webClient.post()
-                    .uri("/recommend")
-                    .bodyValue(request)
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-
-            return mapImmediateResponse(response);
-
-        } catch (Exception e) {
-            throw new RuntimeException("ML recommend API failed: " + e.getMessage());
-        }
+        return mapImmediateResponse(callApi("/recommend", request));
     }
 
     public MLScheduleResult getSchedule(IrrigationMLRequestDTo request) {
+        return mapScheduleResponse(callApi("/schedule", request));
+    }
+
+    private @Nullable Map callApi(String uri, Object body) {
         try {
-            @Nullable Map response = webClient.post()
-                    .uri("/schedule")
-                    .bodyValue(request)
+            return webClient.post()
+                    .uri(uri)
+                    .bodyValue(body)
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
-
-            return mapScheduleResponse(response);
-
         } catch (Exception e) {
-            throw new RuntimeException("ML schedule API failed: " + e.getMessage());
+            throw new RuntimeException("ML API failed: " + e.getMessage());
         }
     }
 
     private MLImmediateResult mapImmediateResponse(Map<String, Object> res) {
+        if (res == null) throw new RuntimeException("Empty ML response");
 
-        if (res == null) {
-            throw new RuntimeException("Empty response from ML recommend API");
-        }
-
-        MLImmediateResult result = new MLImmediateResult();
-
-        result.setIrrigateToday(getBoolean(res, "irrigate_today"));
-        result.setEmergency(getBoolean(res, "emergency_irrigation"));
-        result.setIrrigationMm(getDouble(res, "irrigation_amount_mm"));
-        result.setReason((String) res.getOrDefault("reason", "No reason provided"));
-
-        return result;
+        MLImmediateResult r = new MLImmediateResult();
+        r.setIrrigateToday(bool(res, "irrigate_today"));
+        r.setEmergency(bool(res, "emergency_irrigation"));
+        r.setIrrigationMm(dbl(res, "irrigation_amount_mm"));
+        r.setReason((String) res.getOrDefault("reason", ""));
+        return r;
     }
 
-    // =========================
-    // 🔄 MAPPING: SCHEDULE
-    // =========================
     private MLScheduleResult mapScheduleResponse(Map<String, Object> res) {
+        if (res == null) throw new RuntimeException("Empty ML response");
 
-        if (res == null) {
-            throw new RuntimeException("Empty response from ML schedule API");
-        }
+        MLScheduleResult r = new MLScheduleResult();
+        r.setEmergency(bool(res, "emergency_irrigation"));
+        r.setTotalIrrigationMm(dbl(res, "total_irrigation_planned_mm"));
 
-        MLScheduleResult result = new MLScheduleResult();
+        List<MLDayPlan> days = ((List<Map<String, Object>>) res.getOrDefault("schedule", List.of()))
+                .stream()
+                .map(d -> {
+                    MLDayPlan p = new MLDayPlan();
+                    p.setDay(intVal(d, "day"));
+                    p.setDate((String) d.getOrDefault("date", ""));
+                    p.setIrrigate(bool(d, "irrigate"));
+                    p.setIrrigationMm(dbl(d, "amount_mm"));
+                    p.setRainExpected(dbl(d, "rain_expected_mm"));
+                    p.setReason((String) d.getOrDefault("reason", ""));
+                    return p;
+                })
+                .toList();
 
-        result.setEmergency(getBoolean(res, "emergency_irrigation"));
-        result.setTotalIrrigationMm(getDouble(res, "total_irrigation_planned_mm"));
-
-        List<MLDayPlan> days = new ArrayList<>();
-
-        List<Map<String, Object>> scheduleList =
-                (List<Map<String, Object>>) res.get("schedule");
-
-        if (scheduleList != null) {
-            for (Map<String, Object> d : scheduleList) {
-
-                MLDayPlan day = new MLDayPlan();
-
-                day.setDay(getInt(d, "day"));
-                day.setDate((String) d.getOrDefault("date", ""));
-
-                day.setIrrigate(getBoolean(d, "irrigate"));
-                day.setIrrigationMm(getDouble(d, "amount_mm"));
-                day.setRainExpected(getDouble(d, "rain_expected_mm"));
-                day.setReason((String) d.getOrDefault("reason", ""));
-
-                days.add(day);
-            }
-        }
-
-        result.setDays(days);
-
-        return result;
+        r.setDays(days);
+        return r;
     }
 
-    // =========================
-    // 🧰 SAFE PARSING HELPERS
-    // =========================
-    private double getDouble(Map<String, Object> map, String key) {
-        Object val = map.get(key);
-        return val != null ? ((Number) val).doubleValue() : 0.0;
+    private double dbl(Map<String, Object> m, String k) {
+        Object v = m.get(k);
+        return v == null ? 0 : ((Number) v).doubleValue();
     }
 
-    private boolean getBoolean(Map<String, Object> map, String key) {
-        Object val = map.get(key);
-        return val != null && (Boolean) val;
+    private boolean bool(Map<String, Object> m, String k) {
+        Object v = m.get(k);
+        return v != null && (Boolean) v;
     }
 
-    private int getInt(Map<String, Object> map, String key) {
-        Object val = map.get(key);
-        return val != null ? ((Number) val).intValue() : 0;
+    private int intVal(Map<String, Object> m, String k) {
+        Object v = m.get(k);
+        return v == null ? 0 : ((Number) v).intValue();
     }
 }

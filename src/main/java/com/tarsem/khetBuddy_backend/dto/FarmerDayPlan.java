@@ -4,19 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DayPlan {
+public class FarmerDayPlan {
 
     private int day;
-    private LocalDate date;
-
-    private boolean irrigate;
+    private String date;
+    private String action; // Irrigate / Skip
     private double hours;
     private int cycles;
-
-    private String message;
+    private String note;
 }

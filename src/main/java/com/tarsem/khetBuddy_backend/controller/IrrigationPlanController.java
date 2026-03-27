@@ -1,10 +1,13 @@
 package com.tarsem.khetBuddy_backend.controller;
 
+import com.tarsem.khetBuddy_backend.dto.FarmerScheduleResponse;
+import com.tarsem.khetBuddy_backend.dto.IrrigationAdviceDTO;
 import com.tarsem.khetBuddy_backend.dto.IrrigationPlanRequestDTO;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import com.tarsem.khetBuddy_backend.service.Interfaces.IrrigationPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,10 +22,18 @@ public class IrrigationPlanController {
     public FarmerService farmerService;
 
     @PostMapping("/immediate/{farmId}")
-    public void generatePlan(
+    public ResponseEntity<IrrigationAdviceDTO> getImmediatePlan(
             @PathVariable Long farmId,
             @RequestBody IrrigationPlanRequestDTO requestDTO
     ){
-        irrigationService.getImmediatePlan(farmId,requestDTO);
+        return ResponseEntity.ok(irrigationService.getImmediatePlan(farmId,requestDTO));
+    }
+
+    @PostMapping("/schedule/{farmId}")
+    public ResponseEntity<FarmerScheduleResponse> generateSchedule(
+            @PathVariable Long farmId,
+            @RequestBody IrrigationPlanRequestDTO requestDTO
+    ){
+        return ResponseEntity.ok(irrigationService.generateSchedule(farmId,requestDTO));
     }
 }

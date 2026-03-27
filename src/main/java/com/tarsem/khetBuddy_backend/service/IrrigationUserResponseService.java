@@ -11,11 +11,13 @@ import java.util.List;
 @Service
 public class IrrigationUserResponseService {
 
+    private static final double HOURS_PER_CYCLE = 2.5;
+    private static final double RAIN_SKIP_THRESHOLD = 5.0;
 
-    public IrrigationAdviceDTO buildImmediateResponse(IrrigationPlanRequestDTO req,MLImmediateResult ml, Farm farm) {
+    public IrrigationAdviceDTO buildImmediateResponse(IrrigationPlanRequestDTO req, MLImmediateResult ml, Farm farm) {
 
-        double hours = calculateHours(ml.getIrrigationMm(), farm,req);
-        int cycles = (int) Math.ceil(hours);
+        double hours = calculateHours(ml.getIrrigationMm(), farm, req);
+        int cycles = calculateCycles(hours);
 
         IrrigationAdviceDTO dto = new IrrigationAdviceDTO();
         dto.setIrrigateToday(ml.isIrrigateToday());
@@ -25,30 +27,90 @@ public class IrrigationUserResponseService {
         dto.setMessage(
                 ml.isIrrigateToday()
                         ? (ml.isEmergency()
-                        ? "Urgent irrigation needed. Run for " + round(hours) + " hours (" + cycles + " cycles)."
-                        : "Irrigate for " + round(hours) + " hours (" + cycles + " cycles). " + ml.getReason())
-                        : "No irrigation needed today. " + ml.getReason()
+                        ? "Urgent irrigation needed. Run " + round(hours) + " hrs (~" + cycles + " cycles)."
+                        : "Irrigate " + round(hours) + " hrs (~" + cycles + " cycles). " + ml.getReason())
+                        : "No irrigation needed. " + ml.getReason()
         );
 
         return dto;
     }
 
+    public FarmerScheduleResponse buildFarmerSchedule(
+            IrrigationPlanRequestDTO req,
+            MLScheduleResult ml,
+            Farm farm
+    ) {
+
+        List<FarmerDayPlan> plan = new ArrayList<>();
+        double totalHours = 0;
+        int irrigationDays = 0;
+
+        for (MLDayPlan d : ml.getDays()) {
+
+            double hours = calculateHours(d.getIrrigationMm(), farm, req);
+            int cycles = calculateCycles(hours);
+
+            FarmerDayPlan p = new FarmerDayPlan();
+            p.setDay(d.getDay());
+            p.setDate(d.getDate());
+
+            if (d.getRainExpected() > RAIN_SKIP_THRESHOLD) {
+                p.setAction("Skip");
+                p.setNote("Rain expected (" + round(d.getRainExpected()) + " mm)");
+            } else if (!d.isIrrigate()) {
+                p.setAction("Skip");
+                p.setNote("Rest day");
+            } else {
+                p.setAction("Irrigate");
+                p.setHours(round(hours));
+                p.setCycles(cycles);
+                p.setNote("Irrigate " + round(hours) + " hrs");
+
+                totalHours += hours;
+                irrigationDays++;
+            }
+
+            plan.add(p);
+        }
+
+        FarmerScheduleResponse res = new FarmerScheduleResponse();
+        res.setPlan(plan);
+        res.setSummary(new SummaryDTO(
+                ml.getDays().size(),
+                irrigationDays,
+                round(totalHours),
+                "14-day irrigation plan based on weather and crop needs"
+        ));
+
+        return res;
+    }
 
     private double calculateHours(double mm, Farm farm, IrrigationPlanRequestDTO req) {
 
-        double area = req.getField_unit().equals("HECTARE")
-                ? farm.getTotalLand() * 10000
-                : req.getField_unit().equals("ACRE")
-                ? farm.getTotalLand() * 4047
-                : farm.getTotalLand();
+        String unit = normalize(req.getField_unit(), "ACRE");
+        String pump = normalize(req.getPump_type(), "MEDIUM");
 
-        double flow = req.getPump_type().equals("SMALL")
-                ? 10000
-                : req.getPump_type().equals("LARGE")
-                ? 40000
-                : 20000;
+        double area = switch (unit) {
+            case "HECTARE" -> farm.getTotalLand() * 10000;
+            case "ACRE" -> farm.getTotalLand() * 4047;
+            default -> farm.getTotalLand();
+        };
+
+        double flow = switch (pump) {
+            case "SMALL" -> 10000;
+            case "LARGE" -> 40000;
+            default -> 20000;
+        };
 
         return (mm * area) / flow;
+    }
+
+    private int calculateCycles(double hours) {
+        return (int) Math.ceil(hours / HOURS_PER_CYCLE);
+    }
+
+    private String normalize(String v, String def) {
+        return v == null ? def : v.trim().toUpperCase();
     }
 
     private double round(double v) {
