@@ -1,8 +1,8 @@
 package com.tarsem.khetBuddy_backend.controller;
 
-import com.tarsem.khetBuddy_backend.dto.FarmDetails;
-import com.tarsem.khetBuddy_backend.model.Farm;
-import com.tarsem.khetBuddy_backend.service.FarmService;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmDetails;
+import com.tarsem.khetBuddy_backend.entity.Farm;
+import com.tarsem.khetBuddy_backend.service.FarmServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 public class FarmController {
 
     @Autowired
-    private FarmService farmService;
+    private FarmServiceImpl farmServiceImpl;
 
     @GetMapping("/my-farms")
     @Operation(
@@ -24,7 +24,7 @@ public class FarmController {
             description = "Fetches all farms associated with the authenticated user"
     )
     public List<Farm> getFarm(Authentication authentication){
-        return farmService.getFarm(authentication);
+        return farmServiceImpl.getFarm(authentication);
     }
 
     @PostMapping("/add")
@@ -34,7 +34,7 @@ public class FarmController {
     )
     public Farm addFarm(@RequestBody FarmDetails farmDetails,
                         Authentication authentication){
-        return farmService.addFarm(farmDetails,authentication);
+        return farmServiceImpl.addFarm(farmDetails,authentication);
     }
 
     @DeleteMapping("/delete/{farmId}")
@@ -43,7 +43,7 @@ public class FarmController {
             description = "Deletes a farm using its ID"
     )
     public String deleteFarm(@PathVariable Long farmId){
-        farmService.deleteFarm(farmId);
+        farmServiceImpl.deleteFarm(farmId);
         return "Farm deleted: "+farmId;
     }
 }

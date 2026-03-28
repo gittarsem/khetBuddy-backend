@@ -1,10 +1,8 @@
 package com.tarsem.khetBuddy_backend.service.Interfaces;
 
-import com.tarsem.khetBuddy_backend.dto.FarmerScheduleResponse;
-import com.tarsem.khetBuddy_backend.dto.IrrigationAdviceDTO;
-import com.tarsem.khetBuddy_backend.dto.IrrigationPlanRequestDTO;
-import com.tarsem.khetBuddy_backend.dto.IrrigationPlanResponseDTO;
-import org.jspecify.annotations.Nullable;
+import com.tarsem.khetBuddy_backend.dto.irrigation.FarmerScheduleResponse;
+import com.tarsem.khetBuddy_backend.dto.irrigation.IrrigationAdviceDTO;
+import com.tarsem.khetBuddy_backend.dto.irrigation.IrrigationPlanRequestDTO;
 
 public interface IrrigationPlanService {
     IrrigationAdviceDTO getImmediatePlan(Long farmId, IrrigationPlanRequestDTO requestDTO);

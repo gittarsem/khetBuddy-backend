@@ -1,8 +1,10 @@
 package com.tarsem.khetBuddy_backend.controller;
 
-import com.tarsem.khetBuddy_backend.dto.*;
-import com.tarsem.khetBuddy_backend.model.Farm;
-import com.tarsem.khetBuddy_backend.model.UserEntity;
+import com.tarsem.khetBuddy_backend.dto.yield.YieldMlRequest;
+import com.tarsem.khetBuddy_backend.dto.yield.YieldMlResponse;
+import com.tarsem.khetBuddy_backend.dto.yield.YieldPredictionDTO;
+import com.tarsem.khetBuddy_backend.entity.Farm;
+import com.tarsem.khetBuddy_backend.entity.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,16 +15,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tarsem.khetBuddy_backend.Utils.AppUtils.giveMeCurrentUser;
+
 @RestController
 @RequestMapping("/api/yield")
 @Tag(name = "Yield Prediction Controller", description = "APIs for crop yield prediction and history tracking")
 public class YieldPredictionController {
 
     @Autowired
-    private YieldPredictionService yieldPredictionService;
-
-    @Autowired
-    private UserService userService;
+    private YieldPredictionServiceImpl yieldPredictionServiceImpl;
 
     @Autowired
     private FarmRepo farmRepo;
@@ -42,7 +43,7 @@ public class YieldPredictionController {
             System.out.println("AUTHORITIES = " + auth.getAuthorities());
         }
 
-        UserEntity userEntity = userService.getCurrentUser();
+        UserEntity userEntity = giveMeCurrentUser();
 
         Farm farm=farmRepo.findById(farmId)
                 .orElseThrow(()-> new RuntimeException("Farm does not exist"));
@@ -55,7 +56,7 @@ public class YieldPredictionController {
         yieldMlRequest.setLatitude(latitude);
         yieldMlRequest.setLongitude(longitude);
         System.out.println(yieldMlRequest);
-        return yieldPredictionService.predict(yieldMlRequest,farmId);
+        return yieldPredictionServiceImpl.predict(yieldMlRequest,farmId);
     }
 
     @GetMapping("/history/{farmId}")
@@ -69,6 +70,6 @@ public class YieldPredictionController {
             @RequestParam int size
     ){
         System.out.println("API HIT");
-        return yieldPredictionService.getHistory(farmId,page,size);
+        return yieldPredictionServiceImpl.getHistory(farmId,page,size);
     }
 }

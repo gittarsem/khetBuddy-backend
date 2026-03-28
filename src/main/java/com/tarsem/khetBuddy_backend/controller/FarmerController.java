@@ -1,7 +1,10 @@
 package com.tarsem.khetBuddy_backend.controller;
 
-import com.tarsem.khetBuddy_backend.dto.*;
-import com.tarsem.khetBuddy_backend.service.microservices.ImageService;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerProfileResponseDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerUpdateProfileRequestDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerUpdateProfileResponseDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.ProfilePicDTO;
+import com.tarsem.khetBuddy_backend.external.ImageClient;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,7 +27,7 @@ public class FarmerController {
     private FarmerService farmerService;
 
     @Autowired
-    private ImageService imageService;
+    private ImageClient imageClient;
 
     @PostMapping(value = "/details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
@@ -35,7 +38,7 @@ public class FarmerController {
             @RequestPart("data") FarmerUpdateProfileRequestDTO requestDTO,
             @RequestPart("file") MultipartFile file){
 
-        String imageUrl = imageService.uploadImage(file);
+        String imageUrl = imageClient.uploadImage(file);
         return ResponseEntity.ok(farmerService.farmerDetailsUpdate(requestDTO, imageUrl));
     }
 
@@ -76,7 +79,7 @@ public class FarmerController {
     public ResponseEntity<ProfilePicDTO> updateProfile(
             @RequestPart("file") MultipartFile file){
 
-        String imageUrl = imageService.uploadImage(file);
+        String imageUrl = imageClient.uploadImage(file);
         return ResponseEntity.ok(farmerService.updateProfilePic(imageUrl));
     }
 }

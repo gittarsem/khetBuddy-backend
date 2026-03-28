@@ -1,8 +1,8 @@
 package com.tarsem.khetBuddy_backend.controller;
 
-import com.tarsem.khetBuddy_backend.dto.FarmerScheduleResponse;
-import com.tarsem.khetBuddy_backend.dto.IrrigationAdviceDTO;
-import com.tarsem.khetBuddy_backend.dto.IrrigationPlanRequestDTO;
+import com.tarsem.khetBuddy_backend.dto.irrigation.FarmerScheduleResponse;
+import com.tarsem.khetBuddy_backend.dto.irrigation.IrrigationAdviceDTO;
+import com.tarsem.khetBuddy_backend.dto.irrigation.IrrigationPlanRequestDTO;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import com.tarsem.khetBuddy_backend.service.Interfaces.IrrigationPlanService;
 import lombok.extern.slf4j.Slf4j;

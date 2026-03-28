@@ -1,16 +1,19 @@
 package com.tarsem.khetBuddy_backend.service;
 
-import com.tarsem.khetBuddy_backend.Exception.BadUsernamePassword;
-import com.tarsem.khetBuddy_backend.dto.*;
-import com.tarsem.khetBuddy_backend.model.UserEntity;
-import com.tarsem.khetBuddy_backend.model.UserPrincipal;
+import com.tarsem.khetBuddy_backend.exception.BadUsernamePassword;
+import com.tarsem.khetBuddy_backend.dto.auth.AuthResponse;
+import com.tarsem.khetBuddy_backend.dto.auth.ChangePasswordRequestDTO;
+import com.tarsem.khetBuddy_backend.dto.auth.LoginRequest;
+import com.tarsem.khetBuddy_backend.dto.auth.RegisterRequest;
+import com.tarsem.khetBuddy_backend.entity.UserEntity;
+import com.tarsem.khetBuddy_backend.entity.UserPrincipal;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
+import com.tarsem.khetBuddy_backend.security.service.JwtService;
 import com.tarsem.khetBuddy_backend.service.Interfaces.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.export.UnableToRegisterMBeanException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

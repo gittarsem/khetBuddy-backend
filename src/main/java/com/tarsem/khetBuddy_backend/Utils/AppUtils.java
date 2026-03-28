@@ -1,8 +1,8 @@
 package com.tarsem.khetBuddy_backend.Utils;
 
 
-import com.tarsem.khetBuddy_backend.model.UserEntity;
-import com.tarsem.khetBuddy_backend.model.UserPrincipal;
+import com.tarsem.khetBuddy_backend.entity.UserEntity;
+import com.tarsem.khetBuddy_backend.entity.UserPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AppUtils {

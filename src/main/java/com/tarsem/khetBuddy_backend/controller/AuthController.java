@@ -1,8 +1,8 @@
 package com.tarsem.khetBuddy_backend.controller;
 
-import com.tarsem.khetBuddy_backend.dto.*;
+import com.tarsem.khetBuddy_backend.dto.auth.*;
 import com.tarsem.khetBuddy_backend.service.Interfaces.AuthService;
-import com.tarsem.khetBuddy_backend.service.JwtService;
+import com.tarsem.khetBuddy_backend.security.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

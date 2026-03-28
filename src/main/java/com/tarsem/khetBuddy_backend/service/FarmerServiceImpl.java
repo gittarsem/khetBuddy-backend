@@ -1,13 +1,12 @@
 package com.tarsem.khetBuddy_backend.service;
 
-import com.tarsem.khetBuddy_backend.Exception.ResourceNotFoundException;
-import com.tarsem.khetBuddy_backend.Exception.UnAuthorisedException;
-import com.tarsem.khetBuddy_backend.dto.FarmerProfileResponseDTO;
-import com.tarsem.khetBuddy_backend.dto.FarmerUpdateProfileRequestDTO;
-import com.tarsem.khetBuddy_backend.dto.FarmerUpdateProfileResponseDTO;
-import com.tarsem.khetBuddy_backend.dto.ProfilePicDTO;
-import com.tarsem.khetBuddy_backend.model.FarmerDetails;
-import com.tarsem.khetBuddy_backend.model.UserEntity;
+import com.tarsem.khetBuddy_backend.exception.UnAuthorisedException;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerProfileResponseDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerUpdateProfileRequestDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.FarmerUpdateProfileResponseDTO;
+import com.tarsem.khetBuddy_backend.dto.farmer.ProfilePicDTO;
+import com.tarsem.khetBuddy_backend.entity.FarmerDetails;
+import com.tarsem.khetBuddy_backend.entity.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmerDetailsRepo;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import lombok.AllArgsConstructor;

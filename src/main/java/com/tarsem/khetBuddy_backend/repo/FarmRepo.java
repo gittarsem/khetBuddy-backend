@@ -1,7 +1,7 @@
 package com.tarsem.khetBuddy_backend.repo;
 
-import com.tarsem.khetBuddy_backend.model.Farm;
-import com.tarsem.khetBuddy_backend.model.UserEntity;
+import com.tarsem.khetBuddy_backend.entity.Farm;
+import com.tarsem.khetBuddy_backend.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
