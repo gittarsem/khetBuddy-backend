@@ -4,6 +4,7 @@ import com.tarsem.khetBuddy_backend.dto.farmer.FarmDetails;
 import com.tarsem.khetBuddy_backend.entity.Farm;
 import com.tarsem.khetBuddy_backend.service.FarmServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/farm")
+@SecurityRequirement(name = "bearer")
 @Tag(name = "Farm Controller", description = "APIs for managing user farms")
 public class FarmController {
 

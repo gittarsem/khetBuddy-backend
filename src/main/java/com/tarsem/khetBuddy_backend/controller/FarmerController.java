@@ -31,8 +31,8 @@ public class FarmerController {
 
     @PostMapping(value = "/details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
-            summary = "Update farmer profile with image",
-            description = "Updates farmer details along with profile image upload"
+            summary = "Create farmer profile with image",
+            description = "Creates farmer details along with profile image upload"
     )
     public ResponseEntity<FarmerUpdateProfileResponseDTO> farmerDetails(
             @RequestPart("data") FarmerUpdateProfileRequestDTO requestDTO,

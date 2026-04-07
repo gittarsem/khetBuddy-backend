@@ -8,6 +8,7 @@ import com.tarsem.khetBuddy_backend.service.Interfaces.IrrigationPlanService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/api/irrigation")
+@SecurityRequirement(name = "bearer")
 @Tag(name = "Irrigation Planning", description = "APIs for irrigation advice and scheduling")
 public class IrrigationPlanController {
 

@@ -22,7 +22,7 @@ public class SwaggerConfig {
                 ))
                 .info(new Info()
                         .title("KhetBuddy Backend")
-                        .version("1.0")
+                        .version("2.0")
                         .description("API documentation for the KhetBuddy Backend"))
                 .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
                 .components(new Components()
