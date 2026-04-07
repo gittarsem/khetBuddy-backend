@@ -4,32 +4,43 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class IrrigationUtility {
-    public static double calculateLastWeekIrrigationMm(
+    public static int calculateLastWeekIrrigationMm(
             double dailyAvgHours,
             double fieldSize,
             String fieldUnit,
             String pumpType
     ) {
-
         double weeklyHours = dailyAvgHours * 7;
 
+// Normalize inputs
+        String unit = fieldUnit == null ? "" : fieldUnit.trim().toUpperCase();
+        String pump = pumpType == null ? "" : pumpType.trim().toUpperCase();
+
         double areaM2;
-        switch (fieldUnit) {
+        switch (unit) {
             case "ACRE": areaM2 = fieldSize * 4047; break;
             case "HECTARE": areaM2 = fieldSize * 10000; break;
-            default: areaM2 = fieldSize;
+            case "M2":
+            case "SQM":
+            case "SQUARE_METER": areaM2 = fieldSize; break;
+            default: throw new IllegalArgumentException("Invalid field unit: " + fieldUnit);
         }
 
-        double flowRate;
-        switch (pumpType) {
-            case "SMALL": flowRate = 10000; break;
-            case "LARGE": flowRate = 40000; break;
-            default: flowRate = 20000;
-        }
+        double flowRate = switch (pump) {
+            case "SMALL" -> 5000;
+            case "LARGE" -> 20000;
+            case "MEDIUM" -> 10000;
+            default -> throw new IllegalArgumentException("Invalid pump type: " + pumpType);
+        };
 
         double totalLiters = weeklyHours * flowRate;
+        double mm = totalLiters / areaM2;
 
-        return totalLiters / areaM2;
+        if (mm > 150) {
+            throw new IllegalArgumentException("Unrealistic irrigation value: " + mm);
+        }
+
+        return (int)mm;
     }
 
     public static String getCropStage(String crop, LocalDate sowingDate) {
@@ -44,36 +55,26 @@ public class IrrigationUtility {
             throw new IllegalArgumentException("Sowing date cannot be in future");
         }
 
-        crop = crop.toLowerCase();
+        crop = crop == null ? "" : crop.trim().toLowerCase();
 
-        // helper lambda
-        java.util.function.Function<long[], String> stageResolver = (ranges) -> {
-            if (days <= ranges[0]) return "Germination";
-            if (days <= ranges[1]) return "Vegetative";
-            if (days <= ranges[2]) return "Flowering";
-            if (days <= ranges[3]) return "Grain Filling";
-            return "Maturity";
+        // Unified stage resolver (ONLY allowed stages)
+        java.util.function.Function<long[], String> resolveStage = (r) -> {
+            if (days <= r[0]) return "Seedling";
+            if (days <= r[1]) return "Vegetative";
+            if (days <= r[2]) return "Flowering";
+            return "Ripening";
         };
 
         switch (crop) {
 
             case "maize":
-                return stageResolver.apply(new long[]{10, 30, 60, 90});
+                return resolveStage.apply(new long[]{10, 30, 60});
 
             case "rice":
-                if (days <= 15) return "Nursery";
-                if (days <= 45) return "Vegetative";
-                if (days <= 75) return "Reproductive";
-                if (days <= 110) return "Ripening";
-                return "Maturity";
+                return resolveStage.apply(new long[]{15, 45, 75});
 
             case "wheat":
-                if (days <= 15) return "Germination";
-                if (days <= 40) return "Tillering";
-                if (days <= 70) return "Stem Elongation";
-                if (days <= 100) return "Heading";
-                if (days <= 120) return "Ripening";
-                return "Maturity";
+                return resolveStage.apply(new long[]{15, 40, 90});
 
             default:
                 return "Vegetative";

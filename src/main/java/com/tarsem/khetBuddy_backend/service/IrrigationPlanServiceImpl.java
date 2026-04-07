@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
+
 import static com.tarsem.khetBuddy_backend.Utils.IrrigationUtility.calculateLastWeekIrrigationMm;
 import static com.tarsem.khetBuddy_backend.Utils.IrrigationUtility.getCropStage;
 
@@ -40,11 +42,12 @@ public class IrrigationPlanServiceImpl implements IrrigationPlanService {
         mlrequestDTO.setStage(getCropStage(farm.getCrop(),requestDTO.getSowing_date()));
         mlrequestDTO.setLastIrrigationDay(requestDTO.getLastIrrigationDay());
         mlrequestDTO.setLast_week_irrigation_mm(
-                calculateLastWeekIrrigationMm(
+                (double) calculateLastWeekIrrigationMm(
                         requestDTO.getDaily_avg(), farm.getTotalLand(),
                         requestDTO.getField_unit(),requestDTO.getPump_type()
                 )
         );
+        System.out.println(mlrequestDTO);
         MLImmediateResult mlresult=mlService.getImmediateRecommendation(mlrequestDTO);
         return userResponseService.buildImmediateResponse(requestDTO,mlresult,farm);
 
@@ -63,7 +66,7 @@ public class IrrigationPlanServiceImpl implements IrrigationPlanService {
         mlrequestDTO.setStage(getCropStage(farm.getCrop(),requestDTO.getSowing_date()));
         mlrequestDTO.setLastIrrigationDay(requestDTO.getLastIrrigationDay());
         mlrequestDTO.setLast_week_irrigation_mm(
-                calculateLastWeekIrrigationMm(
+                (double) calculateLastWeekIrrigationMm(
                         requestDTO.getDaily_avg(), farm.getTotalLand(),
                         requestDTO.getField_unit(),requestDTO.getPump_type()
                 )

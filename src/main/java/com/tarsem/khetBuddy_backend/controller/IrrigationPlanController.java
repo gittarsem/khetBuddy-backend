@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/irrigation")
+@RequestMapping("/api/irrigation")
 @Tag(name = "Irrigation Planning", description = "APIs for irrigation advice and scheduling")
 public class IrrigationPlanController {
 
