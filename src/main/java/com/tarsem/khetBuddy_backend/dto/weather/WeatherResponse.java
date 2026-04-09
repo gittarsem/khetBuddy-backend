@@ -5,10 +5,8 @@ import lombok.Data;
 @Data
 public class WeatherResponse {
 
-    private double avgTemperature;
+    private double currentTemperature;
     private double humidity;
-    private double rainfallToday;
-    private double totalRainfall;
     private double windSpeed;
     private String advisory;
 }

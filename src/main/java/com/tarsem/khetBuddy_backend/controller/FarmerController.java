@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/farmer")
+@RequestMapping("/api/farmer")
 @Slf4j
 @SecurityRequirement(name = "bearer")
 @Tag(name = "Farmer Controller", description = "Farmer profile and farm management APIs")

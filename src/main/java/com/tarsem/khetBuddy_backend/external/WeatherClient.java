@@ -19,15 +19,13 @@ public class WeatherClient {
     }
 
     public WeatherResponse getWeather(double lat, double lon) {
-
         try {
             String rawJson = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/v1/forecast")
                             .queryParam("latitude", lat)
                             .queryParam("longitude", lon)
-                            .queryParam("daily", "temperature_2m_mean,rain_sum")
-                            .queryParam("hourly", "relative_humidity_2m,windspeed_10m")
+                            .queryParam("current", "temperature_2m,relative_humidity_2m,windspeed_10m")
                             .queryParam("timezone", "auto")
                             .build())
                     .retrieve()
@@ -38,31 +36,17 @@ public class WeatherClient {
 
             WeatherResponse response = new WeatherResponse();
 
-            JsonNode daily = root.get("daily");
+            JsonNode current = root.get("current");
 
-            double avgTemp = daily.get("temperature_2m_mean").get(0).asDouble();
-            response.setAvgTemperature(avgTemp);
+            double temp = current.get("temperature_2m").asDouble();
+            double humidity = current.get("relative_humidity_2m").asDouble();
+            double windSpeed = current.get("windspeed_10m").asDouble();
 
-            JsonNode rainArray = daily.get("rain_sum");
-
-            double rainfallToday = rainArray.get(0).asDouble();
-            response.setRainfallToday(rainfallToday);
-
-            double totalRain = 0;
-            for (JsonNode r : rainArray) {
-                totalRain += r.asDouble();
-            }
-            response.setTotalRainfall(totalRain);
-
-            JsonNode hourly = root.get("hourly");
-
-            double humidity = hourly.get("relative_humidity_2m").get(0).asDouble();
+            response.setCurrentTemperature(temp);
             response.setHumidity(humidity);
-
-            double windSpeed = hourly.get("windspeed_10m").get(0).asDouble();
             response.setWindSpeed(windSpeed);
 
-            response.setAdvisory(generateAdvisory(rainfallToday, humidity, windSpeed));
+            response.setAdvisory(generateAdvisory(temp, humidity, windSpeed));
 
             return response;
 
@@ -71,20 +55,19 @@ public class WeatherClient {
         }
     }
 
-    private String generateAdvisory(double rain, double humidity, double wind) {
-
-        if (rain > 20) {
-            return "Heavy rain expected - Avoid irrigation today.";
+    private String generateAdvisory(double temp, double humidity, double wind) {
+        if (humidity > 85) {
+            return "High humidity - Risk of fungal diseases. Monitor crops closely.";
         }
-
-        if (humidity > 80) {
-            return "High humidity - Risk of fungal disease.";
+        if (temp > 35) {
+            return "High temperature - Increase irrigation to prevent crop stress.";
         }
-
         if (wind > 25) {
             return "Strong wind - Avoid pesticide spraying.";
         }
-
-        return "Weather is normal - Suitable for farming activities.";
+        if (humidity < 30) {
+            return "Low humidity - Soil may dry quickly. Consider irrigation.";
+        }
+        return "Weather is stable - Suitable for farming activities.";
     }
 }
