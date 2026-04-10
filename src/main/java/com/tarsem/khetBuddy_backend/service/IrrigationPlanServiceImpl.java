@@ -38,7 +38,14 @@ public class IrrigationPlanServiceImpl implements IrrigationPlanService {
         farmRepo.save(farm);
         IrrigationMLRequestDTo mlrequestDTO=new IrrigationMLRequestDTo();
         mlrequestDTO.setCrop(farm.getCrop());
-        mlrequestDTO.setDistrict(farm.getDistrict());
+        String district=farm.getDistrict();
+        if(district.equals("Una")){
+            mlrequestDTO.setDistrict("Ludhiana");
+        }
+        else{
+            mlrequestDTO.setDistrict(district);
+        }
+
         mlrequestDTO.setStage(getCropStage(farm.getCrop(),requestDTO.getSowing_date()));
         mlrequestDTO.setLastIrrigationDay(requestDTO.getLastIrrigationDay());
         mlrequestDTO.setLast_week_irrigation_mm(
@@ -47,7 +54,6 @@ public class IrrigationPlanServiceImpl implements IrrigationPlanService {
                         requestDTO.getField_unit(),requestDTO.getPump_type()
                 )
         );
-        System.out.println(mlrequestDTO);
         MLImmediateResult mlresult=mlService.getImmediateRecommendation(mlrequestDTO);
         return userResponseService.buildImmediateResponse(requestDTO,mlresult,farm);
 
