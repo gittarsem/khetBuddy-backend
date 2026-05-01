@@ -62,7 +62,7 @@ public class IrrigationUtility {
             if (days <= r[0]) return "Seedling";
             if (days <= r[1]) return "Vegetative";
             if (days <= r[2]) return "Flowering";
-            return "Ripening";
+            return "Fruiting";
         };
 
         switch (crop) {

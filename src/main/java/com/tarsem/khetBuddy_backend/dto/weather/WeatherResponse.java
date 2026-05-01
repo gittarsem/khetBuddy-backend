@@ -8,5 +8,6 @@ public class WeatherResponse {
     private double currentTemperature;
     private double humidity;
     private double windSpeed;
+    private double rainfall;
     private String advisory;
 }

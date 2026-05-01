@@ -52,7 +52,7 @@ public class FarmServiceImpl implements FarmService {
         farm.setPhLevel(Double.parseDouble(farmDetails.getPh_level()));
         farm.setCrop(farmDetails.getCrop());
         farm.setDistrict(locationResponse.getDistrict());
-
+        farm.setSowing_date(farmDetails.getSowing_date());
         return farmRepo.save(farm);
 
     }

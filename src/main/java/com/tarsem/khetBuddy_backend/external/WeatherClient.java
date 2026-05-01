@@ -27,13 +27,21 @@ public class WeatherClient {
                             .queryParam("longitude", lon)
                             .queryParam("current", "temperature_2m,relative_humidity_2m,windspeed_10m")
                             .queryParam("timezone", "auto")
+                            .queryParam("daily","precipitation_sum")
+                            .queryParam("forecast_days",7)
                             .build())
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
             JsonNode root = mapper.readTree(rawJson);
+            JsonNode rainArray=root.path("daily").path("precipitation_sum");
 
+            double avgRainfall=0.0;
+            for(JsonNode rain:rainArray){
+                avgRainfall+=rain.asDouble();
+            }
+            ;
             WeatherResponse response = new WeatherResponse();
 
             JsonNode current = root.get("current");
@@ -42,10 +50,11 @@ public class WeatherClient {
             double humidity = current.get("relative_humidity_2m").asDouble();
             double windSpeed = current.get("windspeed_10m").asDouble();
 
+
             response.setCurrentTemperature(temp);
             response.setHumidity(humidity);
             response.setWindSpeed(windSpeed);
-
+            response.setRainfall(avgRainfall);
             response.setAdvisory(generateAdvisory(temp, humidity, windSpeed));
 
             return response;

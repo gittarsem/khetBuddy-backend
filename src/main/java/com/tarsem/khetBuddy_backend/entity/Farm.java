@@ -36,4 +36,5 @@ public class Farm {
     @JoinColumn(name="user_id")
     @JsonBackReference
     private UserEntity userEntity;
+
 }
