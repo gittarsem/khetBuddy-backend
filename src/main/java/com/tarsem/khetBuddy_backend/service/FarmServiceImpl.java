@@ -8,6 +8,7 @@ import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.repo.UserRepo;
 import com.tarsem.khetBuddy_backend.external.LocationClient;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class FarmServiceImpl implements FarmService {
 
     @Autowired
@@ -25,6 +27,8 @@ public class FarmServiceImpl implements FarmService {
 
     @Autowired
     private LocationClient locationClient;
+
+    private final NotificationServiceImpl notificationService;
 
     public List<Farm> getFarm(Authentication authentication) {
         String username= authentication.getName();
@@ -53,6 +57,8 @@ public class FarmServiceImpl implements FarmService {
         farm.setCrop(farmDetails.getCrop());
         farm.setDistrict(locationResponse.getDistrict());
         farm.setSowing_date(farmDetails.getSowing_date());
+
+        notificationService.sendWelcomeFarm(farm);
         return farmRepo.save(farm);
 
     }

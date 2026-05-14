@@ -57,6 +57,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity newUser=modelMapper.map(registerRequest,UserEntity.class);
         newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userRepo.save(newUser);
+
         return generateToken(newUser);
 
     }

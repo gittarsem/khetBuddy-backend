@@ -11,6 +11,7 @@ import com.tarsem.khetBuddy_backend.repo.FarmerDetailsRepo;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Not;
 import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,11 @@ import static com.tarsem.khetBuddy_backend.Utils.AppUtils.giveMeCurrentUser;
 public class FarmerServiceImpl implements FarmerService {
    private final ModelMapper modelMapper;
    private final FarmerDetailsRepo farmerDetailsRepo;
+   private final NotificationServiceImpl notificationService;
+
+
     @Override
+    @Transactional
     public FarmerUpdateProfileResponseDTO farmerDetailsUpdate(FarmerUpdateProfileRequestDTO requestDTO, String imageUrl) {
         UserEntity user=giveMeCurrentUser();
         if(user==null) throw new RuntimeException("User not Exist");
@@ -33,6 +38,8 @@ public class FarmerServiceImpl implements FarmerService {
         farmer.setProfileImage(imageUrl);
         farmer.setUserEntity(user);
         farmerDetailsRepo.save(farmer);
+
+        notificationService.sendWelcomeFarmer(farmer);
         return modelMapper.map(farmer, FarmerUpdateProfileResponseDTO.class);
 
     }

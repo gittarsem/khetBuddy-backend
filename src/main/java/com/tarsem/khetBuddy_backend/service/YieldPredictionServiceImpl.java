@@ -5,9 +5,11 @@ import com.tarsem.khetBuddy_backend.dto.yield.YieldMlResponse;
 import com.tarsem.khetBuddy_backend.dto.yield.YieldPredictionDTO;
 import com.tarsem.khetBuddy_backend.entity.Farm;
 import com.tarsem.khetBuddy_backend.entity.YieldPrediction;
+import com.tarsem.khetBuddy_backend.exception.ResourceNotFoundException;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.repo.YieldPredictionRepo;
 import com.tarsem.khetBuddy_backend.service.Interfaces.YieldPredictionService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class YieldPredictionServiceImpl implements YieldPredictionService {
 
     @Autowired
@@ -29,6 +32,9 @@ public class YieldPredictionServiceImpl implements YieldPredictionService {
     private FarmRepo farmRepo;
 
     private final WebClient webClient;
+
+    @Autowired
+    private  NotificationServiceImpl notificationService;
 
     public YieldPredictionServiceImpl() {
         this.webClient = WebClient.builder()
@@ -48,6 +54,11 @@ public class YieldPredictionServiceImpl implements YieldPredictionService {
                     .block();
 
             if(response!=null)saveMlResponse(response,farmId);
+            if (response != null) {
+                notificationService.sendYield(farmRepo.findById(farmId).orElseThrow(
+                        ()->new ResourceNotFoundException("Farm does not exist")
+                ),response);
+            }
             return response;
         }
         catch (WebClientResponseException e) {
