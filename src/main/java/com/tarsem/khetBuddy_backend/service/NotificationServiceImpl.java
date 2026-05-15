@@ -62,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
                 response.getYieldPerHectare().getHigher();
 
         client.sendTemplate(
-                farm.getUserEntity().getFarmerDetails().getFirstName(),
+                farm.getUserEntity().getFarmerDetails().getPhoneNo(),
                 "yield_prediction_hi",
                 List.of(
                         farm.getUserEntity().getFarmerDetails().getFirstName(),
