@@ -48,24 +48,37 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendYield(Farm farm, YieldMlResponse response) {
+
         String crop = HindiMapper.crop(response.getCropType());
 
         String location = HindiMapper.location(
                 farm.getDistrict()
-
         );
 
-        String expected = String.valueOf(response.getYieldPerHectare().getExpected());
+        String expected =
+                String.valueOf(response.getYieldPerHectare().getExpected());
 
-        String range = response.getYieldPerHectare().getLower()
-                + "–" +
-                response.getYieldPerHectare().getHigher();
+        String range =
+                response.getYieldPerHectare().getLower()
+                        + "–" +
+                        response.getYieldPerHectare().getHigher();
 
-        client.sendTemplate(
-                farm.getUserEntity().getFarmerDetails().getPhoneNo(),
+        client.sendTemplateWithHeader(
+                farm.getUserEntity()
+                        .getFarmerDetails()
+                        .getPhoneNo(),
+
                 "yield_prediction_hi",
+
+                // Header params
                 List.of(
-                        farm.getUserEntity().getFarmerDetails().getFirstName(),
+                        farm.getUserEntity()
+                                .getFarmerDetails()
+                                .getFirstName()
+                ),
+
+                // Body params
+                List.of(
                         crop,
                         location,
                         expected,
