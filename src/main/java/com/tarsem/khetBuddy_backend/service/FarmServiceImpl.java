@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -56,8 +57,11 @@ public class FarmServiceImpl implements FarmService {
         farm.setPhLevel(Double.parseDouble(farmDetails.getPh_level()));
         farm.setCrop(farmDetails.getCrop());
         farm.setDistrict(locationResponse.getDistrict());
-        farm.setSowing_date(farmDetails.getSowing_date());
-
+        farm.setSowing_date(
+                farmDetails.getSowing_date() != null
+                        ? farmDetails.getSowing_date()
+                        : LocalDate.of(2026, 3, 1)
+        );
         notificationService.sendWelcomeFarm(farm);
         return farmRepo.save(farm);
 

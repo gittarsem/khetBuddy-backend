@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 
 import static com.tarsem.khetBuddy_backend.Utils.AppUtils.giveMeCurrentUser;
 import static com.tarsem.khetBuddy_backend.Utils.IrrigationUtility.getCropStage;
@@ -44,6 +45,9 @@ public class FertilizerPredictionServiceImpl implements FertilizerPredictionServ
         FertilizerMlRequest mlRequest = buildMlRequest(request, farm);
         enrichWithWeather(mlRequest, farm);
         System.out.println(mlRequest);
+        LocalDate sowingDate = farm.getSowing_date() != null
+                ? farm.getSowing_date()
+                : LocalDate.of(2026, 3, 1);
         return mlService.predict(mlRequest);
     }
 
@@ -59,7 +63,9 @@ public class FertilizerPredictionServiceImpl implements FertilizerPredictionServ
         mlRequest.setCropType(farm.getCrop());
         mlRequest.setGrowthStage(getCropStage(farm.getCrop(), farm.getSowing_date()));
         mlRequest.setPh(farm.getPhLevel());
-
+        LocalDate sowingDate = farm.getSowing_date() != null
+                ? farm.getSowing_date()
+                : LocalDate.of(2026, 3, 1);
         return mlRequest;
     }
 
