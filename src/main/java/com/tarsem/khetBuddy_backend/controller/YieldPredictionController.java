@@ -7,8 +7,11 @@ import com.tarsem.khetBuddy_backend.entity.Farm;
 import com.tarsem.khetBuddy_backend.entity.UserEntity;
 import com.tarsem.khetBuddy_backend.repo.FarmRepo;
 import com.tarsem.khetBuddy_backend.service.*;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -19,7 +22,10 @@ import static com.tarsem.khetBuddy_backend.Utils.AppUtils.giveMeCurrentUser;
 
 @RestController
 @RequestMapping("/api/yield")
-@Tag(name = "Yield Prediction Controller", description = "APIs for crop yield prediction and history tracking")
+@Tag(
+        name = "Yield Prediction Controller",
+        description = "APIs for crop yield prediction and history tracking"
+)
 public class YieldPredictionController {
 
     @Autowired
@@ -28,25 +34,33 @@ public class YieldPredictionController {
     @Autowired
     private FarmRepo farmRepo;
 
-
     @PostMapping("/predict/{farmId}")
     @Operation(
             summary = "Predict crop yield",
-            description = "Generates yield prediction for a specific farm using its details"
+            description = "Generates crop yield prediction for a specific farm using farm details"
     )
-    public YieldMlResponse predictYield(@PathVariable Long farmId) {
+    public YieldMlResponse predictYield(
+
+            @Parameter(
+                    description = "ID of the farm for prediction",
+                    example = "1"
+            )
+            @PathVariable Long farmId
+    ) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         System.out.println("AUTH = " + auth);
+
         if (auth != null) {
             System.out.println("AUTHORITIES = " + auth.getAuthorities());
         }
 
         UserEntity userEntity = giveMeCurrentUser();
 
-        Farm farm=farmRepo.findById(farmId)
-                .orElseThrow(()-> new RuntimeException("Farm does not exist"));
+        Farm farm = farmRepo.findById(farmId)
+                .orElseThrow(() -> new RuntimeException("Farm does not exist"));
+
         Double latitude = farm.getLatitude();
         Double longitude = farm.getLongitude();
 
@@ -55,8 +69,10 @@ public class YieldPredictionController {
         yieldMlRequest.setIrrigationType(farm.getIrrigationType());
         yieldMlRequest.setLatitude(latitude);
         yieldMlRequest.setLongitude(longitude);
+
         System.out.println(yieldMlRequest);
-        return yieldPredictionServiceImpl.predict(yieldMlRequest,farmId);
+
+        return yieldPredictionServiceImpl.predict(yieldMlRequest, farmId);
     }
 
     @GetMapping("/history/{farmId}")
@@ -65,11 +81,28 @@ public class YieldPredictionController {
             description = "Fetches paginated history of yield predictions for a farm"
     )
     public Page<YieldPredictionDTO> getHistory(
+
+            @Parameter(
+                    description = "ID of the farm",
+                    example = "1"
+            )
             @PathVariable Long farmId,
+
+            @Parameter(
+                    description = "Page number",
+                    example = "0"
+            )
             @RequestParam int page,
+
+            @Parameter(
+                    description = "Number of records per page",
+                    example = "10"
+            )
             @RequestParam int size
-    ){
+    ) {
+
         System.out.println("API HIT");
-        return yieldPredictionServiceImpl.getHistory(farmId,page,size);
+
+        return yieldPredictionServiceImpl.getHistory(farmId, page, size);
     }
 }

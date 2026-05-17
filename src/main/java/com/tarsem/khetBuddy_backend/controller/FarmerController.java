@@ -6,10 +6,17 @@ import com.tarsem.khetBuddy_backend.dto.farmer.FarmerUpdateProfileResponseDTO;
 import com.tarsem.khetBuddy_backend.dto.farmer.ProfilePicDTO;
 import com.tarsem.khetBuddy_backend.external.ImageClient;
 import com.tarsem.khetBuddy_backend.service.Interfaces.FarmerService;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/farmer")
 @Slf4j
 @SecurityRequirement(name = "bearer")
-@Tag(name = "Farmer Controller", description = "Farmer profile and farm management APIs")
+@Tag(
+        name = "Farmer Controller",
+        description = "Farmer profile and farm management APIs"
+)
 public class FarmerController {
 
     @Autowired
@@ -29,17 +39,37 @@ public class FarmerController {
     @Autowired
     private ImageClient imageClient;
 
-    @PostMapping(value = "/details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(
+            value = "/details",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     @Operation(
             summary = "Create farmer profile with image",
             description = "Creates farmer details along with profile image upload"
     )
     public ResponseEntity<FarmerUpdateProfileResponseDTO> farmerDetails(
+
+            @RequestBody(
+                    description = "Farmer profile details",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = FarmerUpdateProfileRequestDTO.class
+                            )
+                    )
+            )
             @RequestPart("data") FarmerUpdateProfileRequestDTO requestDTO,
-            @RequestPart("file") MultipartFile file){
+
+            @Parameter(
+                    description = "Profile image file"
+            )
+            @RequestPart("file") MultipartFile file
+    ) {
 
         String imageUrl = imageClient.uploadImage(file);
-        return ResponseEntity.ok(farmerService.farmerDetailsUpdate(requestDTO, imageUrl));
+
+        return ResponseEntity.ok(
+                farmerService.farmerDetailsUpdate(requestDTO, imageUrl)
+        );
     }
 
     @PatchMapping("/details")
@@ -48,9 +78,17 @@ public class FarmerController {
             description = "Updates farmer details without changing profile image"
     )
     public ResponseEntity<FarmerUpdateProfileResponseDTO> farmerUpdateDetails(
-            @RequestBody FarmerUpdateProfileRequestDTO requestDTO){
 
-        return ResponseEntity.ok(farmerService.farmerUpdateDetailsUpdate(requestDTO));
+            @RequestBody(
+                    description = "Updated farmer profile details"
+            )
+            @org.springframework.web.bind.annotation.RequestBody
+            FarmerUpdateProfileRequestDTO requestDTO
+    ) {
+
+        return ResponseEntity.ok(
+                farmerService.farmerUpdateDetailsUpdate(requestDTO)
+        );
     }
 
     @GetMapping("/details")
@@ -58,28 +96,42 @@ public class FarmerController {
             summary = "Get farmer profile",
             description = "Fetches the details of the logged-in farmer"
     )
-    public ResponseEntity<FarmerProfileResponseDTO> getFarmerDetails(){
-        return ResponseEntity.ok(farmerService.getFarmerDetails());
+    public ResponseEntity<FarmerProfileResponseDTO> getFarmerDetails() {
+
+        return ResponseEntity.ok(
+                farmerService.getFarmerDetails()
+        );
     }
 
     @GetMapping("/profilePic")
     @Operation(
             summary = "Get farmer profile picture",
-            description = "Retrieves profile picture of a farmer by ID"
+            description = "Retrieves the profile picture of the logged-in farmer"
     )
-    public ResponseEntity<ProfilePicDTO> getProfileImage()  {
-        return ResponseEntity.ok(farmerService.getProfileImage());
+    public ResponseEntity<ProfilePicDTO> getProfileImage() {
+
+        return ResponseEntity.ok(
+                farmerService.getProfileImage()
+        );
     }
 
     @PatchMapping("/profilePic")
     @Operation(
             summary = "Update profile picture",
-            description = "Updates the profile picture of a farmer"
+            description = "Updates the profile picture of the farmer"
     )
     public ResponseEntity<ProfilePicDTO> updateProfile(
-            @RequestPart("file") MultipartFile file){
+
+            @Parameter(
+                    description = "New profile image file"
+            )
+            @RequestPart("file") MultipartFile file
+    ) {
 
         String imageUrl = imageClient.uploadImage(file);
-        return ResponseEntity.ok(farmerService.updateProfilePic(imageUrl));
+
+        return ResponseEntity.ok(
+                farmerService.updateProfilePic(imageUrl)
+        );
     }
 }

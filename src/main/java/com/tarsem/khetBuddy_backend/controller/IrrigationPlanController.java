@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("/api/irrigation")
 @SecurityRequirement(name = "bearer")
-@Tag(name = "Irrigation Planning", description = "APIs for irrigation advice and scheduling")
+@Tag(
+        name = "Irrigation Planning",
+        description = "APIs for irrigation advice and scheduling"
+)
 public class IrrigationPlanController {
 
     @Autowired
@@ -35,12 +38,22 @@ public class IrrigationPlanController {
     )
     @PostMapping("/immediate/{farmId}")
     public ResponseEntity<IrrigationAdviceDTO> getImmediatePlan(
-            @Parameter(description = "Unique ID of the farm", example = "1")
+
+            @Parameter(
+                    description = "Unique ID of the farm",
+                    example = "1"
+            )
             @PathVariable Long farmId,
 
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Farm irrigation input details"
+            )
             @RequestBody IrrigationPlanRequestDTO requestDTO
-    ){
-        return ResponseEntity.ok(irrigationService.getImmediatePlan(farmId, requestDTO));
+    ) {
+
+        return ResponseEntity.ok(
+                irrigationService.getImmediatePlan(farmId, requestDTO)
+        );
     }
 
     @Operation(
@@ -49,11 +62,21 @@ public class IrrigationPlanController {
     )
     @PostMapping("/schedule/{farmId}")
     public ResponseEntity<FarmerScheduleResponse> generateSchedule(
-            @Parameter(description = "Unique ID of the farm", example = "1")
+
+            @Parameter(
+                    description = "Unique ID of the farm",
+                    example = "1"
+            )
             @PathVariable Long farmId,
 
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Farm irrigation scheduling details"
+            )
             @RequestBody IrrigationPlanRequestDTO requestDTO
-    ){
-        return ResponseEntity.ok(irrigationService.generateSchedule(farmId, requestDTO));
+    ) {
+
+        return ResponseEntity.ok(
+                irrigationService.generateSchedule(farmId, requestDTO)
+        );
     }
 }
