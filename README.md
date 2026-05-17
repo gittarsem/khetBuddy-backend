@@ -1,22 +1,29 @@
 # KhetBuddy Backend 🌾
 
-KhetBuddy is a Smart Agriculture Backend Platform built using Spring Boot that helps farmers with:
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.x-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-blue)
+![JWT](https://img.shields.io/badge/Auth-JWT-red)
+![Swagger](https://img.shields.io/badge/API-Swagger-success)
+![Render](https://img.shields.io/badge/Deploy-Render-purple)
 
-* Crop Yield Prediction
-* Fertilizer Recommendation
-* Smart Irrigation Planning
-* Weather Forecast Integration
-* WhatsApp Notifications
-* Farmer & Farm Management
-* JWT Authentication & Security
+KhetBuddy is a Smart Agriculture Backend Platform built using Spring Boot that helps farmers make intelligent farming decisions using Machine Learning, Weather APIs, and Smart Automation.
 
-The project integrates Machine Learning models, external APIs, cloud services, and PostgreSQL database architecture to provide intelligent farming solutions.
+The platform provides:
+
+- Crop Yield Prediction
+- Fertilizer Recommendation
+- Smart Irrigation Planning
+- Real-time Weather Forecasting
+- WhatsApp Notifications
+- Farmer & Farm Management
+- JWT Authentication & Security
 
 ---
 
-# Live Deployment
+# Live Demo
 
-## Backend Base URL
+## Backend URL
 
 ```text
 https://khetbuddy-backend.onrender.com
@@ -30,21 +37,97 @@ https://khetbuddy-backend.onrender.com/swagger-ui/index.html#
 
 ---
 
+# Key Highlights
+
+- Production-ready Spring Boot backend
+- JWT Authentication & Authorization
+- PostgreSQL + Supabase Integration
+- External ML Service Integration
+- WhatsApp Notification System
+- Swagger OpenAPI Documentation
+- Cloud-based Deployment on Render
+- Real-time Weather API Integration
+- Layered Backend Architecture
+- RESTful API Design
+
+---
+
+# Problem Solved
+
+KhetBuddy helps farmers make data-driven agricultural decisions using:
+
+- Weather-aware irrigation planning
+- AI-powered yield prediction
+- Smart fertilizer recommendations
+- WhatsApp farming alerts
+
+The platform reduces manual farming guesswork and improves agricultural productivity through automation and intelligent recommendations.
+
+---
+
 # System Architecture
-  <p align="center">
+
+<p align="center">
   <img src="screenshots/SystemFlow_khetBuddy.png" width="1200"/>
 </p>
-This architecture demonstrates:
 
-* JWT Authentication & Authorization
-* REST API Communication
-* Service Layer Architecture
-* PostgreSQL Database Flow
-* ML Model Integration
-* Weather API Integration
-* WhatsApp Notification System
-* Cloud Image Upload Service
-* Smart Irrigation & Yield Prediction Pipeline
+The backend follows layered architecture using:
+
+```text
+Controllers → Services → Repositories → PostgreSQL Database
+```
+
+Integrated with:
+
+- Machine Learning APIs
+- Weather APIs
+- Cloudinary Image Upload
+- WhatsApp Notification APIs
+
+---
+
+# Database Schema
+
+<p align="center">
+  <img src="screenshots/supabase-schema-uqetjywgrbkljuirgawv-4.png" width="1200"/>
+</p>
+
+Database powered by:
+
+- Supabase PostgreSQL
+- Spring Data JPA
+- Hibernate ORM
+
+---
+
+# Mobile Application UI
+
+<p align="center">
+  <img src="screenshots/KB_S1.jpeg" width="220"/>
+  <img src="screenshots/KB_S2.jpeg" width="220"/>
+  <img src="screenshots/KB_S3.jpeg" width="220"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/KB_S4.jpeg" width="220"/>
+  <img src="screenshots/KB_S5.jpeg" width="220"/>
+</p>
+
+---
+
+# WhatsApp Notification System
+
+<p align="center">
+  <img src="screenshots/WhatsappChat_KB.jpeg" width="300"/>
+  <img src="screenshots/WhatsappProfile_KB.jpeg" width="300"/>
+</p>
+
+Features:
+
+- Irrigation Alerts
+- Weather Warnings
+- Yield Prediction Updates
+- Fertilizer Recommendations
 
 ---
 
@@ -52,72 +135,63 @@ This architecture demonstrates:
 
 ## Authentication & Security
 
-* JWT-based Authentication
-* Access Token & Refresh Token support
-* Secure REST APIs
-* Password change functionality
-* Spring Security integration
+- JWT Authentication
+- Access & Refresh Token System
+- Spring Security Integration
+- Password Change Support
+- Protected REST APIs
 
 ---
 
 ## Farmer Management
 
-* Create farmer profile
-* Update farmer details
-* Upload profile picture
-* Fetch farmer information
+- Create Farmer Profile
+- Update Farmer Details
+- Upload Profile Picture
+- Fetch Farmer Information
 
 ---
 
 ## Farm Management
 
-* Add farms
-* Delete farms
-* Fetch all user farms
-* Farm ownership management
+- Add Farms
+- Delete Farms
+- Fetch User Farms
+- Farm Ownership Management
 
 ---
 
 ## Yield Prediction
 
-* ML-powered crop yield prediction
-* Farm-based prediction system
-* Prediction history tracking
-* Weather-aware prediction logic
+- ML-powered Crop Yield Prediction
+- Weather-aware Prediction Logic
+- Prediction History Tracking
+- Farm-based Prediction System
 
 ---
 
 ## Fertilizer Recommendation
 
-* Intelligent fertilizer recommendation
-* Soil & crop based prediction
-* ML integration support
+- Intelligent Fertilizer Recommendation
+- Soil & Crop-based Prediction
+- ML-powered Recommendation System
 
 ---
 
 ## Irrigation Planning
 
-* Smart irrigation schedule generation
-* Immediate irrigation advice
-* Weather-aware irrigation system
-* Automated irrigation planning logic
+- Smart Irrigation Scheduling
+- Immediate Irrigation Advice
+- Weather-aware Irrigation Logic
+- Automated Planning System
 
 ---
 
 ## Weather Integration
 
-* Real-time weather data
-* Latitude & longitude based forecasting
-* Weather processing engine
-
----
-
-## WhatsApp Notification System
-
-* Irrigation alerts
-* Weather warnings
-* Smart farming notifications
-* WhatsApp Cloud API integration
+- Real-time Weather Forecasting
+- Latitude & Longitude based Weather Data
+- Weather Processing Engine
 
 ---
 
@@ -125,33 +199,33 @@ This architecture demonstrates:
 
 ## Backend
 
-* Java 17
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* Hibernate ORM
-* Maven
+- Java 17
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- Hibernate ORM
+- Maven
 
 ---
 
 ## Database
 
-* Supabase PostgreSQL
+- Supabase PostgreSQL
 
 ---
 
 ## Documentation
 
-* Swagger OpenAPI 3
+- Swagger OpenAPI 3
 
 ---
 
 ## External Services
 
-* Weather API
-* Cloudinary Image Upload
-* WhatsApp Cloud API
-* External ML Models
+- Weather API
+- Cloudinary Image Upload
+- WhatsApp Cloud API
+- External Machine Learning APIs
 
 ---
 
@@ -163,204 +237,60 @@ src
     ├── java/com/tarsem/khetBuddy_backend
     │
     ├── client
-    │   └── # External communication clients (WhatsApp API Client)
+    │   └── # External communication clients
     │
     ├── config
     │   └── # Application configuration classes
-    │      # Swagger, Cloudinary, ModelMapper, WebClient, App Config
     │
     ├── controller
     │   └── # REST API Controllers
-    │      # Auth, Farmer, Farm, Weather, Yield,
-    │      # Fertilizer, Irrigation APIs
     │
     ├── dto
     │   └── # Request & Response DTOs
-    │      # Auth DTOs, Farmer DTOs,
-    │      # Fertilizer DTOs, Irrigation DTOs,
-    │      # Weather DTOs, Yield DTOs
     │
     ├── entity
-    │   └── # JPA Entity classes mapped to PostgreSQL tables
+    │   └── # JPA Entity classes
     │
     ├── enums
-    │   └── # Enum classes used across the application
+    │   └── # Enum classes
     │
     ├── exception
-    │   └── # Global exception handling & custom exceptions
+    │   └── # Global exception handling
     │
     ├── external
-    │   └── # External service integrations
-    │      # Weather APIs, Image Upload APIs, ML APIs
+    │   └── # External API integrations
     │
     ├── mapper
-    │   └── # DTO ↔ Entity mapping & response builders
+    │   └── # DTO ↔ Entity mapping
     │
     ├── repo
     │   └── # Spring Data JPA repositories
-    │      # Database access layer
     │
     ├── security
-    │   ├── config
-    │   │   └── # Spring Security configuration
-    │   │
-    │   ├── jwt
-    │   │   └── # JWT token utilities & filters
-    │   │
-    │   └── service
-    │       └── # Custom user details & authentication services
+    │   └── # JWT & Spring Security configuration
     │
     ├── service
-    │   ├── Interfaces
-    │   │   └── # Service interfaces / contracts
-    │   │
-    │   └── # Business logic implementation classes
-    │      # Authentication, Farmer, Farm,
-    │      # Yield Prediction, Fertilizer,
-    │      # Irrigation, Notification Services
+    │   └── # Business logic implementation
     │
     ├── Utils
     │   └── # Utility/helper classes
-    │      # Common helpers, Hindi mapping,
-    │      # irrigation utilities
     │
-    ├── KhetBuddyBackendApplication
-    │   └── # Main Spring Boot application entry point
-
-    
+    └── resources
+        └── # Configuration & static resources
 ```
 
 ---
 
-# API Documentation
+# Core Modules
 
-## Swagger UI
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-## OpenAPI Docs
-
-```text
-http://localhost:8080/v3/api-docs
-```
-
----
-
-# Authentication Flow
-
-## 1. Register User
-
-```http
-POST /auth/signUp
-```
-
----
-
-## 2. Login User
-
-```http
-POST /auth/login
-```
-
-Returns:
-
-* Access Token
-* Refresh Token
-
----
-
-## 3. Refresh Access Token
-
-```http
-POST /auth/refresh
-```
-
----
-
-## 4. Swagger Authorization
-
-Click:
-
-```text
-Authorize → Enter Bearer Token
-```
-
-Example:
-
-```text
-Bearer eyJhbGciOiJIUzI1Ni...
-```
-
----
-
-# Main API Endpoints
-
-## Auth APIs
-
-| Method | Endpoint             | Description     |
-| ------ | -------------------- | --------------- |
-| POST   | /auth/signUp         | Register user   |
-| POST   | /auth/login          | Login user      |
-| POST   | /auth/refresh        | Refresh token   |
-| PATCH  | /auth/changePassword | Change password |
-
----
-
-## Farmer APIs
-
-| Method | Endpoint               | Description            |
-| ------ | ---------------------- | ---------------------- |
-| POST   | /api/farmer/details    | Create farmer profile  |
-| PATCH  | /api/farmer/details    | Update farmer profile  |
-| GET    | /api/farmer/details    | Get farmer profile     |
-| GET    | /api/farmer/profilePic | Get profile picture    |
-| PATCH  | /api/farmer/profilePic | Update profile picture |
-
----
-
-## Farm APIs
-
-| Method | Endpoint                  | Description    |
-| ------ | ------------------------- | -------------- |
-| GET    | /api/farm/my-farms        | Get user farms |
-| POST   | /api/farm/add             | Add farm       |
-| DELETE | /api/farm/delete/{farmId} | Delete farm    |
-
----
-
-## Yield Prediction APIs
-
-| Method | Endpoint                    | Description            |
-| ------ | --------------------------- | ---------------------- |
-| POST   | /api/yield/predict/{farmId} | Predict crop yield     |
-| GET    | /api/yield/history/{farmId} | Get prediction history |
-
----
-
-## Fertilizer APIs
-
-| Method | Endpoint                         | Description        |
-| ------ | -------------------------------- | ------------------ |
-| POST   | /api/fertilizer/predict/{farmId} | Predict fertilizer |
-
----
-
-## Irrigation APIs
-
-| Method | Endpoint                           | Description                  |
-| ------ | ---------------------------------- | ---------------------------- |
-| POST   | /api/irrigation/immediate/{farmId} | Immediate irrigation advice  |
-| POST   | /api/irrigation/schedule/{farmId}  | Generate irrigation schedule |
-
----
-
-## Weather APIs
-
-| Method | Endpoint             | Description         |
-| ------ | -------------------- | ------------------- |
-| GET    | /api/weather/current | Get current weather |
+- Authentication
+- Farmer Management
+- Farm Management
+- Yield Prediction
+- Fertilizer Recommendation
+- Irrigation Planning
+- Weather Forecasting
+- WhatsApp Notification System
 
 ---
 
@@ -382,7 +312,7 @@ cd khetBuddy-backend
 
 ---
 
-## Run the Application
+## Run Application
 
 ```bash
 mvn spring-boot:run
@@ -396,30 +326,20 @@ OR
 
 ---
 
-## Application URL
-
-```text
-http://localhost:8080
-```
-
----
-
 # Environment Variables
 
 Create a `.env` file or configure these variables in your deployment platform.
 
-## Required Environment Variables
-
-| Variable                 | Description                  |
-| ------------------------ | ---------------------------- |
-| DB_URL                   | PostgreSQL database URL      |
-| DB_USERNAME              | PostgreSQL database username |
-| DB_PASSWORD              | PostgreSQL database password |
-| JWT_SECRET               | JWT secret key               |
-| PORT                     | Server port                  |
-| WHATSAPP_API_URL         | WhatsApp API URL             |
-| WHATSAPP_TOKEN           | WhatsApp API token           |
-| WHATSAPP_PHONE_NUMBER_ID | WhatsApp Business Number ID  |
+| Variable | Description |
+|---|---|
+| DB_URL | PostgreSQL Database URL |
+| DB_USERNAME | PostgreSQL Username |
+| DB_PASSWORD | PostgreSQL Password |
+| JWT_SECRET | JWT Secret Key |
+| PORT | Server Port |
+| WHATSAPP_API_URL | WhatsApp API URL |
+| WHATSAPP_TOKEN | WhatsApp API Token |
+| WHATSAPP_PHONE_NUMBER_ID | WhatsApp Business Number ID |
 
 ---
 
@@ -437,11 +357,8 @@ jwt.secret=${JWT_SECRET}
 spring.servlet.multipart.max-file-size=20MB
 spring.servlet.multipart.max-request-size=20MB
 
-
 springdoc.swagger-ui.path=/swagger-ui.html
 springdoc.api-docs.path=/v3/api-docs
-springdoc.swagger-ui.operationsSorter=method
-springdoc.swagger-ui.tagsSorter=alpha
 
 whatsapp.api.url=${WHATSAPP_API_URL}
 whatsapp.token=${WHATSAPP_TOKEN}
@@ -450,107 +367,35 @@ whatsapp.phone.number.id=${WHATSAPP_PHONE_NUMBER_ID}
 
 ---
 
-# Database Architecture
-
-KhetBuddy uses:
-
-* Supabase PostgreSQL Database
-* Spring Data JPA
-* Hibernate ORM
-
-The database stores:
-
-* User authentication data
-* Farmer profiles
-* Farm records
-* Yield prediction history
-* Irrigation schedules
-
----
-
-# Database Schema Visualization
-
-Add your schema screenshot here:
-
-```text
-```
-# Event Flow / Database Flow
-
-<p align="center">
-  <img src="screenshots/khetbuddy_project_event_flow.png" width="1200"/>
-</p>
-
----
-
-# Application Screenshots
-
-## Mobile Application UI
-
-Add frontend screenshots here:
-
-```text
-
-```
-# Mobile Application UI
-
-<p align="center">
-  <img src="screenshots/KB_S1.jpeg" width="220"/>
-  <img src="screenshots/KB_S2.jpeg" width="220"/>
-  <img src="screenshots/KB_S3.jpeg" width="220"/>
-</p>
-
-<p align="center">
-  <img src="screenshots/KB_S4.jpeg" width="220"/>
-  <img src="screenshots/KB_S5.jpeg" width="220"/>
-</p>
----
-
-## WhatsApp Notification Screenshots
-
-```text
-```
-# WhatsApp Notification System
-
-<p align="center">
-  <img src="screenshots/WhatsappChat_KB.jpeg" width="300"/>
-  <img src="screenshots/WhatsappProfile_KB.jpeg" width="300"/>
-</p>
-Example notifications:
-
-* Irrigation alerts
-* Weather warnings
-* Yield prediction updates
-* Fertilizer recommendations
-
----
-
 # Deployment Stack
 
-| Service           | Technology          |
-| ----------------- | ------------------- |
-| Backend Hosting   | Render              |
-| Database          | Supabase PostgreSQL |
-| Authentication    | JWT                 |
-| API Documentation | Swagger OpenAPI     |
-| Image Storage     | Cloudinary          |
-| Notifications     | WhatsApp Cloud API  |
-| Machine Learning  | External ML Models  |
+| Service | Technology |
+|---|---|
+| Backend Hosting | Render |
+| Database | Supabase PostgreSQL |
+| Authentication | JWT |
+| API Documentation | Swagger OpenAPI |
+| Image Storage | Cloudinary |
+| Notifications | WhatsApp Cloud API |
+| Machine Learning | External ML Models |
+
+---
 
 # Team & Collaboration
 
-This project was developed collaboratively with contributions from:
+This project was built collaboratively:
 
-* Backend Development & System Integration: Tarsem Gulab
-* Frontend Development: Friend / Team Member
-* Machine Learning Models & Prediction Logic: Friend / Team Member
+- Tarsem Gulab → Backend Development, System Design, API Integration, Security
+- Frontend Developer → Mobile Application UI/UX
+- ML Engineer (@Mayank459) → Prediction APIs & ML Models
 
 The project combines:
 
-* Full Stack Development
-* Machine Learning Integration
-* Cloud Deployment
-* REST API Architecture
-* Smart Agriculture Automation
+- Full Stack Development
+- Machine Learning Integration
+- Cloud Deployment
+- REST API Architecture
+- Smart Agriculture Automation
 
 ---
 
@@ -564,19 +409,19 @@ KhetBuddy integrates external Machine Learning microservices developed by @Mayan
 | Irrigation Recommendation API | Smart irrigation planning | https://github.com/Mayank459/irrigation-recommendation-api |
 | Yield Prediction API | Crop yield estimation | https://github.com/Mayank459/yeild_prediction_api |
 
-These services are consumed through REST APIs and integrated into the Spring Boot backend architecture.
+These services are integrated into the Spring Boot backend using REST API communication.
 
 ---
 
 # Future Improvements
 
-* Disease Detection System
-* AI Farming Assistant
-* Satellite-based Monitoring
-* Crop Recommendation System
-* Multi-language Support
-* Farmer Analytics Dashboard
-* Real-time Notifications
+- Disease Detection System
+- AI Farming Assistant
+- Satellite-based Monitoring
+- Crop Recommendation System
+- Multi-language Support
+- Farmer Analytics Dashboard
+- Real-time Notification System
 
 ---
 
