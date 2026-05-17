@@ -1,293 +1,599 @@
-# KhetBuddy Backend
-Smart Farm Management & Agricultural Decision Support System
+# KhetBuddy Backend 🌾
 
-Backend API for managing farms and generating agricultural insights based on soil and environmental parameters.
+KhetBuddy is a Smart Agriculture Backend Platform built using Spring Boot that helps farmers with:
+
+* Crop Yield Prediction
+* Fertilizer Recommendation
+* Smart Irrigation Planning
+* Weather Forecast Integration
+* WhatsApp Notifications
+* Farmer & Farm Management
+* JWT Authentication & Security
+
+The project integrates Machine Learning models, external APIs, cloud services, and PostgreSQL database architecture to provide intelligent farming solutions.
 
 ---
 
 # Live Deployment
 
-Base URL
+## Backend Base URL
 
-```
+```text
 https://khetbuddy-backend.onrender.com
 ```
 
----
+## Swagger API Documentation
 
-# Authentication
-
-## Register
-
-**Endpoint**
-
-```
-POST /register
-```
-
-### Request Body
-
-```json
-{
-  "username": "tarsem",
-  "password": "password123"
-}
-```
-
-### Response Body
-
-```json
-{
-  "accessToken": "jwt-access-token",
-  "refreshToken": "jwt-refresh-token"
-}
+```text
+https://khetbuddy-backend.onrender.com/swagger-ui/index.html#
 ```
 
 ---
 
-## Login
+# System Architecture
+  <p align="center">
+  <img src="screenshots/SystemFlow_khetBuddy.png" width="1200"/>
+</p>
+This architecture demonstrates:
 
-**Endpoint**
+* JWT Authentication & Authorization
+* REST API Communication
+* Service Layer Architecture
+* PostgreSQL Database Flow
+* ML Model Integration
+* Weather API Integration
+* WhatsApp Notification System
+* Cloud Image Upload Service
+* Smart Irrigation & Yield Prediction Pipeline
 
-```
-POST /login
-```
+---
 
-### Request Body
+# Features
 
-```json
-{
-  "username": "tarsem",
-  "password": "password123"
-}
-```
+## Authentication & Security
 
-### Response Body
+* JWT-based Authentication
+* Access Token & Refresh Token support
+* Secure REST APIs
+* Password change functionality
+* Spring Security integration
 
-```json
-{
-  "accessToken": "jwt-access-token",
-  "refreshToken": "jwt-refresh-token"
-}
-```
+---
 
-Frontend must store the **accessToken**.
+## Farmer Management
 
-All protected APIs require this header:
+* Create farmer profile
+* Update farmer details
+* Upload profile picture
+* Fetch farmer information
 
-```
-Authorization: Bearer <accessToken>
+---
+
+## Farm Management
+
+* Add farms
+* Delete farms
+* Fetch all user farms
+* Farm ownership management
+
+---
+
+## Yield Prediction
+
+* ML-powered crop yield prediction
+* Farm-based prediction system
+* Prediction history tracking
+* Weather-aware prediction logic
+
+---
+
+## Fertilizer Recommendation
+
+* Intelligent fertilizer recommendation
+* Soil & crop based prediction
+* ML integration support
+
+---
+
+## Irrigation Planning
+
+* Smart irrigation schedule generation
+* Immediate irrigation advice
+* Weather-aware irrigation system
+* Automated irrigation planning logic
+
+---
+
+## Weather Integration
+
+* Real-time weather data
+* Latitude & longitude based forecasting
+* Weather processing engine
+
+---
+
+## WhatsApp Notification System
+
+* Irrigation alerts
+* Weather warnings
+* Smart farming notifications
+* WhatsApp Cloud API integration
+
+---
+
+# Tech Stack
+
+## Backend
+
+* Java 17
+* Spring Boot
+* Spring Security
+* Spring Data JPA
+* Hibernate ORM
+* Maven
+
+---
+
+## Database
+
+* Supabase PostgreSQL
+
+---
+
+## Documentation
+
+* Swagger OpenAPI 3
+
+---
+
+## External Services
+
+* Weather API
+* Cloudinary Image Upload
+* WhatsApp Cloud API
+* External ML Models
+
+---
+
+# Project Structure
+
+```text
+src
+└── main
+    ├── java/com/tarsem/khetBuddy_backend
+    │
+    ├── client
+    │   └── # External communication clients (WhatsApp API Client)
+    │
+    ├── config
+    │   └── # Application configuration classes
+    │      # Swagger, Cloudinary, ModelMapper, WebClient, App Config
+    │
+    ├── controller
+    │   └── # REST API Controllers
+    │      # Auth, Farmer, Farm, Weather, Yield,
+    │      # Fertilizer, Irrigation APIs
+    │
+    ├── dto
+    │   └── # Request & Response DTOs
+    │      # Auth DTOs, Farmer DTOs,
+    │      # Fertilizer DTOs, Irrigation DTOs,
+    │      # Weather DTOs, Yield DTOs
+    │
+    ├── entity
+    │   └── # JPA Entity classes mapped to PostgreSQL tables
+    │
+    ├── enums
+    │   └── # Enum classes used across the application
+    │
+    ├── exception
+    │   └── # Global exception handling & custom exceptions
+    │
+    ├── external
+    │   └── # External service integrations
+    │      # Weather APIs, Image Upload APIs, ML APIs
+    │
+    ├── mapper
+    │   └── # DTO ↔ Entity mapping & response builders
+    │
+    ├── repo
+    │   └── # Spring Data JPA repositories
+    │      # Database access layer
+    │
+    ├── security
+    │   ├── config
+    │   │   └── # Spring Security configuration
+    │   │
+    │   ├── jwt
+    │   │   └── # JWT token utilities & filters
+    │   │
+    │   └── service
+    │       └── # Custom user details & authentication services
+    │
+    ├── service
+    │   ├── Interfaces
+    │   │   └── # Service interfaces / contracts
+    │   │
+    │   └── # Business logic implementation classes
+    │      # Authentication, Farmer, Farm,
+    │      # Yield Prediction, Fertilizer,
+    │      # Irrigation, Notification Services
+    │
+    ├── Utils
+    │   └── # Utility/helper classes
+    │      # Common helpers, Hindi mapping,
+    │      # irrigation utilities
+    │
+    ├── KhetBuddyBackendApplication
+    │   └── # Main Spring Boot application entry point
+
+    
 ```
 
 ---
 
-# Farm APIs
+# API Documentation
 
-## Get User Farms
+## Swagger UI
 
-**Endpoint**
-
-```
-GET /farm/my-farms
+```text
+http://localhost:8080/swagger-ui/index.html
 ```
 
-### Headers
+## OpenAPI Docs
 
-```
-Authorization: Bearer <accessToken>
-```
-
-### Response Body
-
-```json
-[
-  {
-    "id": 252,
-    "crop": "Maize",
-    "irrigationType": "Canal",
-    "latitude": 30.205,
-    "longitude": 75.8425,
-    "phLevel": 5.2,
-    "totalLand": 12.0,
-    "district": "Sangrur"
-  },
-  {
-    "id": 253,
-    "crop": "Wheat",
-    "irrigationType": "Canal",
-    "latitude": 30.205,
-    "longitude": 75.8425,
-    "phLevel": 5.2,
-    "totalLand": 12.0,
-    "district": "Sangrur"
-  }
-]
-```
-
-If no farms exist:
-
-```json
-[]
-```
-
-Frontend should show **Add Your First Farm** screen.
-
----
-
-# Add New Farm
-
-**Endpoint**
-
-```
-POST /farm/add
-```
-
-### Headers
-
-```
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-```
-
-### Request Body
-
-```json
-{
-  "crop": "Wheat",
-  "district": "Patiala",
-  "irrigationType": "Drip",
-  "latitude": 30.3752,
-  "longitude": 76.1529,
-  "phLevel": 5.2,
-  "totalLand": 8
-}
-```
-
-### Response Body
-
-```json
-{
-  "id": 301,
-  "crop": "Wheat",
-  "irrigationType": "Drip",
-  "latitude": 30.3752,
-  "longitude": 76.1529,
-  "phLevel": 5.2,
-  "totalLand": 8,
-  "district": "Patiala"
-}
-```
-
-Frontend should add the farm to the farm list.
-
----
-
-# Farm Insight API
-
-## Generate Farm Analysis
-
-**Endpoint**
-
-```
-POST /prediction/yield
-```
-
-### Headers
-
-```
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-```
-
-### Request Body
-
-```json
-{
-  "farmId": 252
-}
-```
-
-### Response Body
-
-```json
-{
-  "crop_type": "Maize",
-  "season": "Rabi",
-  "location": {
-    "district": "Sangrur Tahsil",
-    "state": "Punjab",
-    "latitude": 30.205,
-    "longitude": 75.8425
-  },
-  "soil": {
-    "nitrogen": 190.0,
-    "phosphorus": 15.0,
-    "potassium": 122.0,
-    "soil_ph": 8.1,
-    "soil_moisture": 23.0,
-    "source": "auto"
-  },
-  "yield_per_hectare": {
-    "lower": 58.75,
-    "expected": 63.86,
-    "higher": 68.97
-  },
-  "unit": "quintal/hectare",
-  "confidence_note": "Prediction based on GPS location, soil, and weather data"
-}
+```text
+http://localhost:8080/v3/api-docs
 ```
 
 ---
 
-# Future Enhancements
+# Authentication Flow
 
-## Irrigation Pattern Recommendation
+## 1. Register User
 
-The system will analyze:
-
+```http
+POST /auth/signUp
 ```
-soil moisture
-weather conditions
-crop type
-```
-
-to recommend **optimal irrigation schedules**.
 
 ---
 
-## Fertilizer Advice System
+## 2. Login User
 
-Based on soil nutrient analysis:
-
-```
-Nitrogen
-Phosphorus
-Potassium
-Soil pH
+```http
+POST /auth/login
 ```
 
-the system will recommend **appropriate fertilizers and application quantities**.
+Returns:
+
+* Access Token
+* Refresh Token
 
 ---
 
-# Deployment
+## 3. Refresh Access Token
 
-Hosted on **Render Cloud**
+```http
+POST /auth/refresh
+```
+
+---
+
+## 4. Swagger Authorization
+
+Click:
+
+```text
+Authorize → Enter Bearer Token
+```
+
+Example:
+
+```text
+Bearer eyJhbGciOiJIUzI1Ni...
+```
+
+---
+
+# Main API Endpoints
+
+## Auth APIs
+
+| Method | Endpoint             | Description     |
+| ------ | -------------------- | --------------- |
+| POST   | /auth/signUp         | Register user   |
+| POST   | /auth/login          | Login user      |
+| POST   | /auth/refresh        | Refresh token   |
+| PATCH  | /auth/changePassword | Change password |
+
+---
+
+## Farmer APIs
+
+| Method | Endpoint               | Description            |
+| ------ | ---------------------- | ---------------------- |
+| POST   | /api/farmer/details    | Create farmer profile  |
+| PATCH  | /api/farmer/details    | Update farmer profile  |
+| GET    | /api/farmer/details    | Get farmer profile     |
+| GET    | /api/farmer/profilePic | Get profile picture    |
+| PATCH  | /api/farmer/profilePic | Update profile picture |
+
+---
+
+## Farm APIs
+
+| Method | Endpoint                  | Description    |
+| ------ | ------------------------- | -------------- |
+| GET    | /api/farm/my-farms        | Get user farms |
+| POST   | /api/farm/add             | Add farm       |
+| DELETE | /api/farm/delete/{farmId} | Delete farm    |
+
+---
+
+## Yield Prediction APIs
+
+| Method | Endpoint                    | Description            |
+| ------ | --------------------------- | ---------------------- |
+| POST   | /api/yield/predict/{farmId} | Predict crop yield     |
+| GET    | /api/yield/history/{farmId} | Get prediction history |
+
+---
+
+## Fertilizer APIs
+
+| Method | Endpoint                         | Description        |
+| ------ | -------------------------------- | ------------------ |
+| POST   | /api/fertilizer/predict/{farmId} | Predict fertilizer |
+
+---
+
+## Irrigation APIs
+
+| Method | Endpoint                           | Description                  |
+| ------ | ---------------------------------- | ---------------------------- |
+| POST   | /api/irrigation/immediate/{farmId} | Immediate irrigation advice  |
+| POST   | /api/irrigation/schedule/{farmId}  | Generate irrigation schedule |
+
+---
+
+## Weather APIs
+
+| Method | Endpoint             | Description         |
+| ------ | -------------------- | ------------------- |
+| GET    | /api/weather/current | Get current weather |
+
+---
+
+# Installation & Setup
+
+## Clone Repository
+
+```bash
+git clone https://github.com/gittarsem/khetBuddy-backend.git
+```
+
+---
+
+## Navigate to Project
+
+```bash
+cd khetBuddy-backend
+```
+
+---
+
+## Run the Application
+
+```bash
+mvn spring-boot:run
+```
+
+OR
+
+```bash
+./mvnw spring-boot:run
+```
+
+---
+
+## Application URL
+
+```text
+http://localhost:8080
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file or configure these variables in your deployment platform.
+
+## Required Environment Variables
+
+| Variable                 | Description                  |
+| ------------------------ | ---------------------------- |
+| DB_URL                   | PostgreSQL database URL      |
+| DB_USERNAME              | PostgreSQL database username |
+| DB_PASSWORD              | PostgreSQL database password |
+| JWT_SECRET               | JWT secret key               |
+| PORT                     | Server port                  |
+| WHATSAPP_API_URL         | WhatsApp API URL             |
+| WHATSAPP_TOKEN           | WhatsApp API token           |
+| WHATSAPP_PHONE_NUMBER_ID | WhatsApp Business Number ID  |
+
+---
+
+## Example Configuration
+
+```properties
+spring.application.name=khetBuddy-backend
+
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+
+jwt.secret=${JWT_SECRET}
+
+spring.servlet.multipart.max-file-size=20MB
+spring.servlet.multipart.max-request-size=20MB
+
+
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.api-docs.path=/v3/api-docs
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+
+whatsapp.api.url=${WHATSAPP_API_URL}
+whatsapp.token=${WHATSAPP_TOKEN}
+whatsapp.phone.number.id=${WHATSAPP_PHONE_NUMBER_ID}
+```
+
+---
+
+# Database Architecture
+
+KhetBuddy uses:
+
+* Supabase PostgreSQL Database
+* Spring Data JPA
+* Hibernate ORM
+
+The database stores:
+
+* User authentication data
+* Farmer profiles
+* Farm records
+* Yield prediction history
+* Irrigation schedules
+
+---
+
+# Database Schema Visualization
+
+Add your schema screenshot here:
+
+```text
+```
+# Event Flow / Database Flow
+
+<p align="center">
+  <img src="screenshots/khetbuddy_project_event_flow.png" width="1200"/>
+</p>
+
+---
+
+# Application Screenshots
+
+## Mobile Application UI
+
+Add frontend screenshots here:
+
+```text
 
 ```
-https://khetbuddy-backend.onrender.com
+# Mobile Application UI
+
+<p align="center">
+  <img src="screenshots/KB_S1.jpeg" width="220"/>
+  <img src="screenshots/KB_S2.jpeg" width="220"/>
+  <img src="screenshots/KB_S3.jpeg" width="220"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/KB_S4.jpeg" width="220"/>
+  <img src="screenshots/KB_S5.jpeg" width="220"/>
+</p>
+---
+
+## WhatsApp Notification Screenshots
+
+```text
 ```
+# WhatsApp Notification System
+
+<p align="center">
+  <img src="screenshots/WhatsappChat_KB.jpeg" width="300"/>
+  <img src="screenshots/WhatsappProfile_KB.jpeg" width="300"/>
+</p>
+Example notifications:
+
+* Irrigation alerts
+* Weather warnings
+* Yield prediction updates
+* Fertilizer recommendations
+
+---
+
+# Deployment Stack
+
+| Service           | Technology          |
+| ----------------- | ------------------- |
+| Backend Hosting   | Render              |
+| Database          | Supabase PostgreSQL |
+| Authentication    | JWT                 |
+| API Documentation | Swagger OpenAPI     |
+| Image Storage     | Cloudinary          |
+| Notifications     | WhatsApp Cloud API  |
+| Machine Learning  | External ML Models  |
+
+# Team & Collaboration
+
+This project was developed collaboratively with contributions from:
+
+* Backend Development & System Integration: Tarsem Gulab
+* Frontend Development: Friend / Team Member
+* Machine Learning Models & Prediction Logic: Friend / Team Member
+
+The project combines:
+
+* Full Stack Development
+* Machine Learning Integration
+* Cloud Deployment
+* REST API Architecture
+* Smart Agriculture Automation
+
+---
+
+# Machine Learning Integration
+
+KhetBuddy integrates external Machine Learning microservices developed by @Mayank459 for intelligent agricultural recommendations.
+
+| Service | Purpose | Repository |
+|---|---|---|
+| Fertilizer Recommendation API | Predict optimal fertilizers | https://github.com/Mayank459/fertilizer-recommendation-api |
+| Irrigation Recommendation API | Smart irrigation planning | https://github.com/Mayank459/irrigation-recommendation-api |
+| Yield Prediction API | Crop yield estimation | https://github.com/Mayank459/yeild_prediction_api |
+
+These services are consumed through REST APIs and integrated into the Spring Boot backend architecture.
+
+---
+
+# Future Improvements
+
+* Disease Detection System
+* AI Farming Assistant
+* Satellite-based Monitoring
+* Crop Recommendation System
+* Multi-language Support
+* Farmer Analytics Dashboard
+* Real-time Notifications
 
 ---
 
 # Author
 
-Tarsem
+## Tarsem Gulab
 
-GitHub
+Backend Developer | Spring Boot | Machine Learning Integration
 
-```
+GitHub:
+
+```text
 https://github.com/gittarsem
 ```
 
 ---
+
+# License
+
+This project is licensed under the MIT License.
